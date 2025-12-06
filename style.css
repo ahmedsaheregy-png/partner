@@ -1,0 +1,309 @@
+:root {
+    --primary-green: #06402B;
+    /* Darker professional green */
+    --accent-green: #0F5132;
+    --light-green: #D1E7DD;
+    --header-bg: #F8F9FA;
+    --bg-color: #F0F4F1;
+    /* Calm minty/grey background */
+    --text-color: #333333;
+    --card-bg: #FFFFFF;
+    --hover-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Cairo', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    direction: rtl;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+}
+
+/* Header */
+.main-header {
+    background-color: var(--header-bg);
+    padding: 2rem 1rem;
+    text-align: center;
+    border-bottom: 5px solid var(--primary-green);
+    margin-bottom: 2rem;
+}
+
+.logo-container {
+    margin-bottom: 1rem;
+}
+
+.logo {
+    max-height: 100px;
+    width: auto;
+}
+
+.header-text h1 {
+    font-size: 1.8rem;
+    color: var(--primary-green);
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.warning-text {
+    color: #dc3545;
+    font-weight: bold;
+    font-size: 1rem;
+    border: 1px solid #dc3545;
+    display: inline-block;
+    padding: 0.2rem 1rem;
+    border-radius: 20px;
+    background: #fff5f5;
+}
+
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Sections */
+.section {
+    margin-bottom: 4rem;
+}
+
+.section-title {
+    font-size: 1.8rem;
+    color: var(--primary-green);
+    border-right: 5px solid var(--accent-green);
+    padding-right: 15px;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+/* Grid Layouts */
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+}
+
+.grid-center {
+    display: flex;
+    justify-content: center;
+}
+
+/* Cards (General) */
+.card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border: 1px solid transparent;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--hover-shadow);
+    border-color: var(--light-green);
+}
+
+.card-content {
+    padding: 1.5rem;
+    flex-grow: 1;
+}
+
+/* UPDATED TYPOGRAPHY FOR CARDS */
+.card-desc {
+    font-size: 1.05rem;
+    /* Larger than 0.95rem */
+    color: #222;
+    /* Darker than #555 */
+    line-height: 1.8;
+    font-weight: 500;
+}
+
+/* Thumbnails & Video Cards */
+.thumbnail-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%;
+    /* 16:9 Aspect Ratio */
+    background: #000;
+    overflow: hidden;
+}
+
+.thumbnail-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+.card:hover .thumbnail-img {
+    opacity: 0.6;
+    transform: scale(1.05);
+}
+
+.thumbnail-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    text-align: center;
+}
+
+.play-icon {
+    font-size: 3rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0.5rem;
+    transition: transform 0.3s;
+}
+
+.card:hover .play-icon {
+    transform: scale(1.2);
+    color: #fff;
+}
+
+.video-overlay-title {
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    position: absolute;
+    bottom: 15px;
+    left: 10px;
+    right: 10px;
+    text-align: center;
+}
+
+/* Doc Cards */
+.doc-card .doc-image-wrapper {
+    position: relative;
+    height: 250px;
+    background: var(--light-green);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.doc-img {
+    max-height: 60%;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+}
+
+.doc-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(6, 64, 43, 0.9);
+    padding: 1rem;
+    text-align: center;
+}
+
+.doc-overlay h3 {
+    color: #fff;
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+.doc-overlay small {
+    font-weight: 400;
+    opacity: 0.9;
+    /* Slightly more visible */
+    color: #ddd;
+}
+
+/* Update doc descriptions to match new typography */
+.doc-desc {
+    font-size: 1.05rem;
+    color: #222;
+    line-height: 1.8;
+}
+
+.list-desc ul {
+    list-style-position: inside;
+    margin-top: 10px;
+    color: #222;
+}
+
+/* Info Cards */
+.info-card .info-image-wrapper {
+    height: 300px;
+    background: #fff;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.info-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-center h3 {
+    color: var(--primary-green);
+    font-size: 1.3rem;
+}
+
+/* Footer */
+.footer {
+    background: var(--primary-green);
+    color: #fff;
+    text-align: center;
+    padding: 2rem;
+    margin-top: 4rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .header-text h1 {
+        font-size: 1.4rem;
+    }
+
+    .grid-2,
+    .grid-3 {
+        grid-template-columns: 1fr;
+    }
+
+    .feature-card {
+        max-width: 100%;
+    }
+}
