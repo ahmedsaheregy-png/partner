@@ -59,13 +59,13 @@ a {
 .warning-text {
     color: #dc3545;
     font-weight: bold;
-    font-size: 1rem;
+    font-size: 2rem;
     border: 1px solid #dc3545;
     display: inline-block;
     padding: 0.2rem 1rem;
     border-radius: 20px;
     background: #fff5f5;
-}
+    font-family: 'calibri', Geneva, sans-serif;
 
 /* Container */
 .container {
