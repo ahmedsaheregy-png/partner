@@ -360,6 +360,13 @@ a {
     color: var(--primary-green);
 }
 
+.stat-subtitle {
+    font-size: 0.75rem;
+    color: #777;
+    margin-top: -5px;
+    font-weight: 500;
+}
+
 .features-list {
     grid-column: 1 / -1;
     margin-top: 1rem;
@@ -383,6 +390,14 @@ a {
     margin-bottom: 0.5rem;
     font-size: 0.95rem;
     color: #333;
+}
+
+.features-list small {
+    display: block;
+    margin-right: 1.5rem;
+    color: #666;
+    font-size: 0.85rem;
+    margin-top: 2px;
 }
 
 .chart-column {

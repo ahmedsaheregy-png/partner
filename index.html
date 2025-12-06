@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <link rel="stylesheet" href="style.css">
     <style>
         /* Fallback if external CSS fails or for critical path */
@@ -128,7 +129,7 @@
                 <a href="https://docs.google.com/spreadsheets/d/1NGAg4AbmAFd4Cyx4NvE_nlQQXRp2B0IYR_Fuw_Zr0eI/edit?usp=drive_link"
                     target="_blank" class="card doc-card">
                     <div class="doc-image-wrapper">
-                        <img src="assets/icon_feasibility_new.png" alt="دراسة جدوى كاملة" class="doc-img">
+                        <img src="assets/icon_feasibility.png" alt="دراسة جدوى كاملة" class="doc-img">
                         <div class="doc-overlay">
                             <h3>دراسة جدوى كاملة</h3>
                         </div>
@@ -225,20 +226,10 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Register DataLabels plugin
+            Chart.register(ChartDataLabels);
+
             const ctx = document.getElementById('profitChart').getContext('2d');
-
-            // Create gradient
-            const gradientPurple = ctx.createLinearGradient(0, 0, 0, 400);
-            gradientPurple.addColorStop(0, '#5e35b1');
-            gradientPurple.addColorStop(1, '#4527a0');
-
-            const gradientBlue = ctx.createLinearGradient(0, 0, 0, 400);
-            gradientBlue.addColorStop(0, '#1e88e5');
-            gradientBlue.addColorStop(1, '#1565c0');
-
-            const gradientDark = ctx.createLinearGradient(0, 0, 0, 400);
-            gradientDark.addColorStop(0, '#263238');
-            gradientDark.addColorStop(1, '#000000');
 
             new Chart(ctx, {
                 type: 'bar',
@@ -250,19 +241,40 @@
                         backgroundColor: [
                             '#5e35b1', // Purple
                             '#0288d1', // Blue
-                            '#212121', // Dark
+                            '#0d47a1', // Navy Blue
                             '#000000'  // Black
                         ],
                         borderRadius: 8,
-                        barPercentage: 0.7
+                        barPercentage: 0.8,
+                        categoryPercentage: 0.9
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    layout: {
+                        padding: {
+                            top: 30
+                        }
+                    },
                     plugins: {
                         legend: {
                             display: false
+                        },
+                        // Configure DataLabels to show white text inside bars
+                        datalabels: {
+                            color: '#ffffff',
+                            anchor: 'center',
+                            align: 'center',
+                            font: {
+                                weight: 'bold',
+                                size: 14,
+                                family: 'Cairo'
+                            },
+                            formatter: function (value, context) {
+                                if (context.dataIndex === 3) return '?';
+                                return '$' + Math.round(value / 1000) + 'K';
+                            }
                         },
                         tooltip: {
                             callbacks: {
@@ -274,7 +286,6 @@
                                     if (context.parsed.y !== null) {
                                         label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.parsed.y);
                                     }
-                                    // Custom tooltip for last bar
                                     if (context.dataIndex === 3) {
                                         return "أرباح غير محدودة (؟)";
                                     }
