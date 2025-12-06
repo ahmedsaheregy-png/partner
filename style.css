@@ -59,13 +59,15 @@ a {
 .warning-text {
     color: #c21829;
     font-weight: bold;
-    font-size: .3rem;
+    font-size: 1.8rem;
     border: 1px solid #dc3545;
     display: inline-block;
     padding: 0.2rem 1rem;
     border-radius: 20px;
     background: #f5f3f3;
     font-family: 'calibri', Geneva, sans-serif;
+    max-width: 90%;
+}
 
 /* Container */
 .container {
@@ -216,7 +218,7 @@ a {
 }
 
 .doc-img {
-    max-height: 60%;
+    height: 140px;
     width: auto;
     object-fit: contain;
     filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
@@ -241,8 +243,8 @@ a {
 .doc-overlay small {
     font-weight: 400;
     opacity: 0.9;
-    /* Slightly more visible */
     color: #ddd;
+    font-size: 0.95rem;
 }
 
 /* Update doc descriptions to match new typography */
@@ -295,6 +297,10 @@ a {
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .header-text h1 {
+        font-size: 1.4rem;
+    }
+
+    .warning-text {
         font-size: 1.4rem;
     }
 
