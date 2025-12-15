@@ -454,4 +454,16 @@ a {
     .feature-card {
         max-width: 100%;
     }
+
+    /* Mobile Readability Enhancements for Features */
+    .features-list li {
+        font-size: 1.25rem !important;
+        line-height: 1.7;
+    }
+
+    .features-list small {
+        font-size: 1.1rem !important;
+        line-height: 1.6;
+        color: #444;
+    }
 }
