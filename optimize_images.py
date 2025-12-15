@@ -10,14 +10,14 @@ def optimize_images(directory):
                     # Calculate new size maintaining aspect ratio
                     width, height = img.size
                     
-                    # Deciding max dimension based on file type/usage guesses
-                    # Avatars and icons usually don't need to be huge
-                    # Thumbnails might need a bit more, but 800px is usually plenty for web
-                    max_dimension = 800
+                    # More aggressive sizing
+                    max_dimension = 600 
                     
-                    if "avatar" in filename or "icon" in filename:
-                        max_dimension = 400
-                    
+                    if "avatar" in filename or "suhaib" in filename or "ibrahim" in filename:
+                        max_dimension = 250 # Avatars don't need to be huge (displayed at ~130px)
+                    elif "thumb" in filename or "info" in filename:
+                        max_dimension = 500 # Thumbnails displayed in grid
+
                     if width > max_dimension or height > max_dimension:
                         # Resize
                         if width > height:
@@ -33,9 +33,13 @@ def optimize_images(directory):
                     # Save with optimization
                     # Overwrite the file
                     if filename.lower().endswith('.png'):
-                        img.save(filepath, optimize=True)
+                        # If it's a thumbnail or info graphics, it might be better as JPG if no transparency
+                        # But to be safe we keep PNG but reduce colors or optimize hard? 
+                        # PIL optimize=True is decent but not magic.
+                        # Let's try to save as optimized PNG
+                        img.save(filepath, optimize=True, compress_level=9)
                     elif filename.lower().endswith(('.jpg', '.jpeg')):
-                        img.save(filepath, optimize=True, quality=80)
+                        img.save(filepath, optimize=True, quality=65)
                     
                     print(f"Optimized {filename}")
             except Exception as e:
