@@ -516,14 +516,14 @@
                                     const centerY = bar.y + (bar.height / 2);
 
                                     if (index === 0) {
-                                        // First column: Amount and "ربح سنوي" stacked to its right
-                                        // We calculate the total width of the [Amount + Stack] block to center it perfectly.
+                                        // First column: Stacked "ربح سنوي" on the left, Amount on the right
                                         
                                         const amountText = amount;
                                         const line1 = 'ربح';
                                         const line2 = 'سنوي';
                                         
-                                        ctx.font = 'bold 18px Cairo';
+                                        // Increase font size for amount
+                                        ctx.font = 'bold 26px Cairo';
                                         const amountWidth = ctx.measureText(amountText).width;
                                         
                                         ctx.font = 'bold 14px Cairo'; 
@@ -531,24 +531,29 @@
                                         const line2Width = ctx.measureText(line2).width;
                                         const stackWidth = Math.max(line1Width, line2Width);
                                         
-                                        const gap = 6;
-                                        const totalWidth = amountWidth + gap + stackWidth;
+                                        const gap = 8;
+                                        const totalWidth = stackWidth + gap + amountWidth;
                                         
                                         // Calculate starting X to center the whole block
                                         const startX = bar.x - (totalWidth / 2);
                                         const centerY = bar.y + (bar.height / 2);
                                         
-                                        // Draw Amount
+                                        // Draw Stacked Text (Left side)
                                         ctx.fillStyle = '#ffffff';
                                         ctx.textAlign = 'left';
                                         ctx.textBaseline = 'middle';
-                                        ctx.font = 'bold 18px Cairo';
-                                        ctx.fillText(amountText, startX, centerY);
                                         
-                                        // Draw Stacked Text
                                         ctx.font = 'bold 14px Cairo';
-                                        ctx.fillText(line1, startX + amountWidth + gap, centerY - 8);
-                                        ctx.fillText(line2, startX + amountWidth + gap, centerY + 8);
+                                        // Align stacked text center relative to its own stackWidth
+                                        const line1Offset = (stackWidth - line1Width) / 2;
+                                        const line2Offset = (stackWidth - line2Width) / 2;
+                                        
+                                        ctx.fillText(line1, startX + line1Offset, centerY - 9);
+                                        ctx.fillText(line2, startX + line2Offset, centerY + 9);
+                                        
+                                        // Draw Amount (Right side)
+                                        ctx.font = 'bold 26px Cairo';
+                                        ctx.fillText(amountText, startX + stackWidth + gap, centerY);
                                         
                                         // Reset context properties for other bars
                                         ctx.textBaseline = 'alphabetic';
