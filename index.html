@@ -522,16 +522,16 @@
                                         const line1 = 'ربح';
                                         const line2 = 'سنوي';
                                         
-                                        // Massive font size for amount
-                                        ctx.font = 'bold 34px Cairo'; // Increased from 26px
+                                        // Font sizes: Amount large (34px), Stacked small (14px - reduced 30%)
+                                        ctx.font = 'bold 34px Cairo';
                                         const amountWidth = ctx.measureText(amountText).width;
                                         
-                                        ctx.font = 'bold 20px Cairo'; // Increased from 14px
+                                        ctx.font = 'bold 14px Cairo'; 
                                         const line1Width = ctx.measureText(line1).width;
                                         const line2Width = ctx.measureText(line2).width;
                                         const stackWidth = Math.max(line1Width, line2Width);
                                         
-                                        const gap = 10;
+                                        const gap = 12; // Slightly increased gap for clarity
                                         const totalWidth = stackWidth + gap + amountWidth;
                                         
                                         // Calculate starting X to center the whole block
@@ -543,13 +543,14 @@
                                         ctx.textAlign = 'left';
                                         ctx.textBaseline = 'middle';
                                         
-                                        ctx.font = 'bold 20px Cairo';
-                                        // Align stacked text center relative to its own stackWidth
+                                        ctx.font = 'bold 14px Cairo';
+                                        
+                                        // Moving closer to center: +/- 8px instead of 12px
                                         const line1Offset = (stackWidth - line1Width) / 2;
                                         const line2Offset = (stackWidth - line2Width) / 2;
                                         
-                                        ctx.fillText(line1, startX + line1Offset, centerY - 12);
-                                        ctx.fillText(line2, startX + line2Offset, centerY + 12);
+                                        ctx.fillText(line1, startX + line1Offset, centerY - 8);
+                                        ctx.fillText(line2, startX + line2Offset, centerY + 10);
                                         
                                         // Draw Amount (Right side)
                                         ctx.font = 'bold 34px Cairo';
