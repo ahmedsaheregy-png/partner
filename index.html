@@ -206,6 +206,13 @@
             <div class="chart-container-full" style="width: 100%; height: 500px;">
                 <canvas id="profitChart"></canvas>
             </div>
+            <style>
+                @media (max-width: 768px) {
+                    .chart-container-full {
+                        height: 400px !important;
+                    }
+                }
+            </style>
         </section>
 
         <!-- القسم الخامس: إنفوجرافس مساعدة -->
@@ -291,7 +298,10 @@
                         title: {
                             display: true,
                             text: 'سيناريوهات الأرباح المتوقعة لشركاء المرحلة الأولى خلال 4 سنوات (إجمالي الاستثمار 50 ألف$)',
-                            font: { size: 16, family: 'Cairo' },
+                            font: {
+                                size: window.innerWidth < 768 ? 11 : 16,
+                                family: 'Cairo'
+                            },
                             color: '#06402B',
                             padding: { bottom: 20 }
                         }
@@ -312,9 +322,11 @@
                                 color: '#4a4a4a',
                                 font: {
                                     family: 'Cairo',
-                                    size: 20,
+                                    size: window.innerWidth < 768 ? 14 : 20,
                                     weight: 'bold'
-                                }
+                                },
+                                maxRotation: window.innerWidth < 768 ? 0 : 0,
+                                minRotation: window.innerWidth < 768 ? 0 : 0
                             }
                         }
                     }
