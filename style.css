@@ -544,17 +544,22 @@ a {
 }
 
 /* Commemorative Plaque (Tableau) Style for Team */
+/* Commemorative Plaque (Tableau) Style for Team - Grand Size */
 .plaque-container {
     background: linear-gradient(to bottom, #06402B, #022015);
-    border: 6px solid #C5A059;
-    /* Gold Frame */
-    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5), 0 10px 25px rgba(0, 0, 0, 0.3);
-    border-radius: 8px;
-    padding: 2rem 1rem;
-    max-width: 800px;
-    margin: 2rem auto;
+    border: 8px solid #C5A059;
+    /* Thicker Gold Frame */
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.6), 0 15px 40px rgba(0, 0, 0, 0.4);
+    border-radius: 12px;
+    padding: 3rem 1.5rem;
+    width: 100%;
+    /* Full Width */
+    max-width: 100%;
+    /* Ensure it spans fully */
+    margin: 3rem auto;
     text-align: center;
     position: relative;
+    box-sizing: border-box;
     /* Metallic sheen effect overlay */
 }
 
@@ -563,53 +568,63 @@ a {
 .plaque-container::after {
     content: '';
     position: absolute;
-    width: 12px;
-    height: 12px;
+    width: 20px;
+    /* Larger screws */
+    height: 20px;
     background: radial-gradient(circle, #fff 10%, #C5A059 100%);
     border-radius: 50%;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-    top: 10px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.6);
+    top: 15px;
 }
 
 .plaque-container::before {
-    left: 10px;
+    left: 15px;
 }
 
 .plaque-container::after {
-    right: 10px;
+    right: 15px;
 }
 
 .plaque-title-decoration {
     font-family: 'Cairo', sans-serif;
     color: #C5A059;
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-    border-bottom: 1px solid rgba(197, 160, 89, 0.3);
+    font-size: 2.2rem;
+    /* Much Larger Title */
+    font-weight: 800;
+    margin-bottom: 2.5rem;
+    border-bottom: 2px solid rgba(197, 160, 89, 0.4);
     display: inline-block;
-    padding-bottom: 10px;
-    width: 80%;
+    padding-bottom: 15px;
+    width: 90%;
 }
 
 .plaque-grid {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 1.5rem;
-    /* Compact spacing */
+    gap: 3rem;
+    /* Spacious spacing */
 }
 
 .plaque-item {
-    width: 120px;
-    /* Small compact width */
+    width: 180px;
+    /* Larger item width */
     text-align: center;
     position: relative;
+    transition: transform 0.3s ease;
+}
+
+.plaque-item:hover {
+    transform: scale(1.05);
+    /* Subtle pop effect */
 }
 
 .plaque-avatar-wrapper {
     position: relative;
-    width: 70px;
-    height: 70px;
-    margin: 0 auto 8px;
+    width: 110px;
+    /* Much Larger Avatar */
+    height: 110px;
+    margin: 0 auto 15px;
 }
 
 .plaque-avatar {
@@ -617,40 +632,58 @@ a {
     height: 100%;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid #C5A059;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    filter: sepia(20%) contrast(110%);
-    /* Slight vintage/gold tint */
+    border: 3px solid #C5A059;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+    filter: sepia(15%) contrast(110%);
 }
 
 .plaque-role {
-    font-size: 0.85rem;
-    font-weight: 700;
+    font-size: 1.3rem;
+    /* Larger Role Text */
+    font-weight: 800;
     color: #ebd39c;
     /* Gold text */
-    margin-bottom: 2px;
-    line-height: 1.3;
+    margin-bottom: 5px;
+    line-height: 1.4;
 }
 
 .plaque-name {
-    font-size: 0.75rem;
+    font-size: 1.1rem;
+    /* Larger Name Text */
     color: #b0c4de;
-    /* Silvery/Light Blue-Grey text */
-    font-weight: 400;
+    font-weight: 600;
 }
 
-/* Mobile Tweak */
+/* Mobile Tweak - Keep them relatively large on mobile too */
 @media (max-width: 480px) {
+    .plaque-container {
+        padding: 1.5rem 0.5rem;
+        border-width: 5px;
+    }
+
+    .plaque-title-decoration {
+        font-size: 1.6rem;
+    }
+
     .plaque-grid {
-        gap: 1rem;
+        gap: 2rem;
     }
 
     .plaque-item {
-        width: 100px;
+        width: 140px;
+        /* Still quite large */
     }
 
     .plaque-avatar-wrapper {
-        width: 55px;
-        height: 55px;
+        width: 90px;
+        height: 90px;
+    }
+
+    .plaque-role {
+        font-size: 1.1rem;
+    }
+
+    .plaque-name {
+        font-size: 0.95rem;
     }
 }
