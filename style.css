@@ -621,6 +621,11 @@ a {
     filter: sepia(10%) contrast(115%);
 }
 
+/* Fix for Financial Officer (Suhaib) image position */
+.plaque-item:nth-child(2) .plaque-avatar {
+    object-position: top;
+}
+
 .plaque-role {
     font-size: 1.6rem;
     /* Massive Role Text */
