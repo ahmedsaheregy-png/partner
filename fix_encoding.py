@@ -383,6 +383,77 @@ html_content = """<!DOCTYPE html>
             </div>
         </section>
 
+        <!-- لجنة تأسيس وتسيير أعمال بنك سويا -->
+        <section class="section">
+            <h2 class="section-title">لجنة تأسيس وتسيير أعمال بنك سويا</h2>
+            <div class="team-grid">
+                <!-- Founder -->
+                <div class="team-card">
+                    <div class="team-img-wrapper">
+                        <img src="assets/avatar_m.png" alt="المؤسس" class="team-img">
+                    </div>
+                    <div class="team-role">المؤسس</div>
+                    <div class="team-name">الاسم الثلاثي</div>
+                </div>
+                <!-- Financial Officer -->
+                <div class="team-card">
+                    <div class="team-img-wrapper">
+                        <img src="assets/avatar_m.png" alt="مسؤول مالي" class="team-img">
+                    </div>
+                    <div class="team-role">مسؤول مالي</div>
+                    <div class="team-name">الاسم الثلاثي</div>
+                </div>
+                <!-- Technical Officer -->
+                <div class="team-card">
+                    <div class="team-img-wrapper">
+                        <img src="assets/avatar_m.png" alt="مسؤول تقني" class="team-img">
+                    </div>
+                    <div class="team-role">مسؤول تقني</div>
+                    <div class="team-name">الاسم الثلاثي</div>
+                </div>
+                <!-- Funding Officer -->
+                <div class="team-card">
+                    <div class="team-img-wrapper">
+                        <img src="assets/avatar_m.png" alt="مسؤول التمويل" class="team-img">
+                    </div>
+                    <div class="team-role">مسؤول التمويل</div>
+                    <div class="team-name">الاسم الثلاثي</div>
+                </div>
+                <!-- Contracts Officer -->
+                <div class="team-card">
+                    <div class="team-img-wrapper">
+                        <img src="assets/avatar_m.png" alt="مسؤول التعاقدات" class="team-img">
+                    </div>
+                    <div class="team-role">مسؤول التعاقدات</div>
+                    <div class="team-name">الاسم الثلاثي</div>
+                </div>
+                <!-- Senior Member -->
+                <div class="team-card">
+                    <div class="team-img-wrapper">
+                        <img src="assets/avatar_m.png" alt="كبير الأعضاء" class="team-img">
+                    </div>
+                    <div class="team-role">كبير الأعضاء</div>
+                    <div class="team-name">الاسم الثلاثي</div>
+                </div>
+                <!-- Secretary -->
+                <div class="team-card">
+                    <div class="team-img-wrapper">
+                        <img src="assets/avatar_m.png" alt="أمين سر" class="team-img">
+                    </div>
+                    <div class="team-role">أمين سر</div>
+                    <div class="team-name">الاسم الثلاثي</div>
+                </div>
+                <!-- Coordinator (Female) -->
+                <div class="team-card">
+                    <div class="team-img-wrapper">
+                        <img src="assets/avatar_f.png" alt="منسقة" class="team-img">
+                    </div>
+                    <div class="team-role">منسقة</div>
+                    <div class="team-name">الاسم الثلاثي</div>
+                </div>
+            </div>
+        </section>
+
         <!-- القسم الخامس: إنفوجرافس مساعدة -->
         <section class="section">
             <h2 class="section-title">إنفوجرافس مساعدة</h2>
