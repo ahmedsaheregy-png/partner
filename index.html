@@ -362,41 +362,40 @@
                                         ctx.fillText(line, bar.x, startY + (i * lineHeight));
                                     });
                                 } else {
-                                    // Remove K and format as plain number
-                                    const amountValue = Math.round(dataset.data[index] / 1000);
+                                    const amount = '$' + Math.round(dataset.data[index] / 1000) + 'K';
                                     const centerY = bar.y + (bar.height / 2);
 
                                     if (index === 0) {
-                                        // First column: Only number and $ sign, centered
+                                        // First column: Amount on right, "ربح سنوي" on left (2 lines)
+
+                                        // Calculate true vertical center between top and bottom of bar
+                                        // In Chart.js, bar.y is the BOTTOM (lower on screen), so we subtract height
                                         const barBottom = bar.y;
                                         const barTop = bar.y - bar.height;
                                         const barCenterY = (barTop + barBottom) / 2;
 
-                                        // Draw amount centered
-                                        ctx.font = 'bold 32px Cairo';
-                                        ctx.textAlign = 'center';
-                                        ctx.fillText('$' + amountValue, bar.x, barCenterY - 10);
+                                        // Draw amount on the right side - centered vertically
+                                        ctx.font = 'bold 28px Cairo';
+                                        ctx.textAlign = 'right';
+                                        ctx.fillText(amount, bar.x + 55, barCenterY);
 
-                                        // Draw "ألف" below
-                                        ctx.font = 'bold 16px Cairo';
-                                        ctx.fillText('ألف', bar.x, barCenterY + 18);
+                                        // Draw "ربح" on the left (top line) - centered vertically
+                                        ctx.font = 'bold 14px Cairo';
+                                        ctx.textAlign = 'left';
+                                        ctx.fillText('ربح', bar.x - 55, barCenterY - 8);
+
+                                        // Draw "سنوي" on the left (bottom line) - centered vertically
+                                        ctx.fillText('سنوي', bar.x - 55, barCenterY + 8);
+
+                                        // Reset text alignment
+                                        ctx.textAlign = 'center';
                                     } else {
-                                        // Columns 2 and 3: Number, "ألف", and "ربح" "سنوي" (two lines)
-                                        // Draw amount centered
-                                        ctx.font = 'bold 32px Cairo';
-                                        ctx.textAlign = 'center';
-                                        ctx.fillText('$' + amountValue, bar.x, centerY - 25);
+                                        // Columns 2 and 3: Original vertical layout (Amount on top, "ربح سنوي" below)
+                                        ctx.font = 'bold 28px Cairo';
+                                        ctx.fillText(amount, bar.x, centerY - 10);
 
-                                        // Draw "ألف" below amount
-                                        ctx.font = 'bold 16px Cairo';
-                                        ctx.fillText('ألف', bar.x, centerY);
-
-                                        // Draw "ربح" 
-                                        ctx.font = 'bold 16px Cairo';
-                                        ctx.fillText('ربح', bar.x, centerY + 20);
-
-                                        // Draw "سنوي"
-                                        ctx.fillText('سنوي', bar.x, centerY + 38);
+                                        ctx.font = 'bold 18px Cairo';
+                                        ctx.fillText('ربح سنوي', bar.x, centerY + 15);
                                     }
                                 }
                             });
