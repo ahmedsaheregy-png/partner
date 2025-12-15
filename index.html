@@ -340,8 +340,9 @@
                                         // First column: Amount on right, "ربح سنوي" on left (2 lines)
 
                                         // Calculate true vertical center between top and bottom of bar
-                                        const barTop = bar.y;
-                                        const barBottom = bar.y + bar.height;
+                                        // In Chart.js, bar.y is the BOTTOM (lower on screen), so we subtract height
+                                        const barBottom = bar.y;
+                                        const barTop = bar.y - bar.height;
                                         const barCenterY = (barTop + barBottom) / 2;
 
                                         // Draw amount on the right side - centered vertically
