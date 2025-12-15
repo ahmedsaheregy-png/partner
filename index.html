@@ -259,6 +259,15 @@
                 const rows = data.table.rows;
                 console.log('Total rows:', rows.length);
 
+                // Debug: Print first 6 rows to see the data structure
+                for (let i = 0; i < Math.min(6, rows.length); i++) {
+                    console.log(`Row ${i}:`, {
+                        'Column C (index 2)': rows[i]?.c[2]?.v,
+                        'Column H (index 7)': rows[i]?.c[7]?.v,
+                        'Column I (index 8)': rows[i]?.c[8]?.v
+                    });
+                }
+
                 // Row indices: 2, 3, 4 (after header row at index 1)
                 // Column C (index 2) = profit, Column H (index 7) = month, Column I (index 8) = member count
 
