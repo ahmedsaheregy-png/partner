@@ -8,8 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <link rel="stylesheet" href="style.css">
     <style>
         /* Fallback if external CSS fails or for critical path */
@@ -154,41 +154,40 @@
         <section class="section chart-section">
             <h2 class="section-title">نموذج أرباح الشريك التقني (CTO)</h2>
 
-            <div class="chart-container-wrapper">
-                <!-- Stats Column -->
-                <div class="stats-column">
-                    <div class="stat-card primary">
-                        <span class="stat-label">قيمة الخدمة</span>
-                        <span class="stat-value">$50,000</span>
-                    </div>
-                    <div class="stat-card success">
-                        <span class="stat-label">سقف الأرباح</span>
-                        <span class="stat-value">$500,000</span>
-                    </div>
-                    <div class="stat-card info">
-                        <span class="stat-label">ربح سنوي</span>
-                        <span class="stat-value">10%</span>
-                    </div>
-                    <div class="stat-card gold">
-                        <span class="stat-label">أرباح العضوية الذهبية - الشجرة</span>
-                        <span class="stat-value">$5,000</span>
-                        <span class="stat-subtitle">تصرف شهريا (تنمو تدريجيا)</span>
-                    </div>
-
-                    <div class="features-list">
-                        <h4>المميزات الإضافية:</h4>
-                        <ul>
-                            <li>✅ عدم تذويب النسبة (Anti-Dilution)</li>
-                            <li>✅ أولوية في توزيع الأرباح</li>
-                            <li>✅ دخل مزدوج (Double Sources)<br><small>سنوي من الشراكة وشهري من الشجرة.</small></li>
-                        </ul>
-                    </div>
+            <!-- Stats Row (Above Chart) -->
+            <div class="stats-row"
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                <div class="stat-card primary">
+                    <span class="stat-label">قيمة الخدمة</span>
+                    <span class="stat-value">$50,000</span>
                 </div>
-
-                <!-- Chart Column -->
-                <div class="chart-column">
-                    <canvas id="profitChart"></canvas>
+                <div class="stat-card success">
+                    <span class="stat-label">سقف الأرباح</span>
+                    <span class="stat-value">$500,000</span>
                 </div>
+                <div class="stat-card info">
+                    <span class="stat-label">ربح سنوي</span>
+                    <span class="stat-value">10%</span>
+                </div>
+                <div class="stat-card gold">
+                    <span class="stat-label">أرباح العضوية الذهبية - الشجرة</span>
+                    <span class="stat-value">$5,000</span>
+                    <span class="stat-subtitle">تصرف شهريا (تنمو تدريجيا)</span>
+                </div>
+            </div>
+
+            <div class="features-list" style="text-align: center; margin-bottom: 30px;">
+                <h4>المميزات الإضافية:</h4>
+                <ul style="display: inline-block; text-align: right;">
+                    <li>✅ عدم تذويب النسبة (Anti-Dilution)</li>
+                    <li>✅ أولوية في توزيع الأرباح</li>
+                    <li>✅ دخل مزدوج (Double Sources)<br><small>سنوي من الشراكة وشهري من الشجرة.</small></li>
+                </ul>
+            </div>
+
+            <!-- Chart Full Width -->
+            <div class="chart-container-full" style="width: 100%; height: 500px;">
+                <canvas id="profitChart"></canvas>
             </div>
         </section>
 
@@ -227,7 +226,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Register DataLabels plugin
             Chart.register(ChartDataLabels);
 
             const ctx = document.getElementById('profitChart').getContext('2d');
@@ -235,15 +233,15 @@
             new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['الشهر 18\n(2047 عضو)', 'الشهر 24\n(8191 عضو)', 'الشهر 36\n(32766 عضو)', 'ربح غير متوقع\n(؟)'],
+                    labels: ['2047\nعضو', '8191\nعضو', '32766\nعضو', '؟'],
                     datasets: [{
                         label: 'أرباح الشريك التقني (بالدولار)',
                         data: [42000, 94000, 198000, 250000],
                         backgroundColor: [
-                            '#5e35b1', // Purple
-                            '#0288d1', // Blue
-                            '#0d47a1', // Navy Blue
-                            '#000000'  // Black
+                            'rgba(156, 136, 255, 0.85)',
+                            'rgba(94, 129, 244, 0.85)',
+                            'rgba(72, 202, 178, 0.85)',
+                            'rgba(255, 183, 77, 0.85)'
                         ],
                         borderRadius: 8,
                         barPercentage: 0.8,
@@ -254,68 +252,25 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     layout: {
-                        padding: {
-                            top: 30
-                        }
+                        padding: { top: 60 }
                     },
                     plugins: {
-                        legend: {
-                            display: false
-                        },
-                        // Configure DataLabels to show white text inside bars
+                        legend: { display: false },
                         datalabels: {
-                            display: true,
-                            color: '#ffffff',
-                            anchor: 'center',
-                            align: 'center',
-                            textAlign: 'center',
-                            clamp: true,
-                            font: {
-                                weight: 'bold',
-                                size: 16,
-                                family: 'Cairo'
-                            },
-                            formatter: function (value, context) {
-                                if (context.dataIndex === 3) return '?';
-                                return '$' + Math.round(value / 1000) + 'K';
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function (context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
-                                    if (context.parsed.y !== null) {
-                                        label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.parsed.y);
-                                    }
-                                    if (context.dataIndex === 3) {
-                                        return "أرباح غير محدودة (؟)";
-                                    }
-                                    return label;
-                                }
-                            }
+                            display: false
                         },
                         title: {
                             display: true,
                             text: 'تطور أرباح الشريك التقني مع نمو عدد الأعضاء',
-                            font: {
-                                size: 16,
-                                family: 'Cairo'
-                            },
+                            font: { size: 16, family: 'Cairo' },
                             color: '#06402B',
-                            padding: {
-                                bottom: 20
-                            }
+                            padding: { bottom: 20 }
                         }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            grid: {
-                                color: '#f0f0f0'
-                            },
+                            grid: { color: '#f0f0f0' },
                             ticks: {
                                 callback: function (value) {
                                     return '$' + value / 1000 + 'k';
@@ -323,17 +278,65 @@
                             }
                         },
                         x: {
-                            grid: {
-                                display: false
-                            },
+                            grid: { display: false },
                             ticks: {
+                                color: '#4a4a4a',
                                 font: {
-                                    family: 'Cairo'
+                                    family: 'Cairo',
+                                    size: 20,
+                                    weight: 'bold'
                                 }
                             }
                         }
                     }
-                }
+                },
+                plugins: [{
+                    id: 'monthLabels',
+                    afterDatasetsDraw: function (chart) {
+                        const ctx = chart.ctx;
+                        const months = ['الشهر 18', 'الشهر 24', 'الشهر 36'];
+
+                        chart.data.datasets.forEach((dataset, i) => {
+                            const meta = chart.getDatasetMeta(i);
+                            meta.data.forEach((bar, index) => {
+                                // Month labels above bars (first 3 only)
+                                if (index < 3) {
+                                    ctx.fillStyle = '#4a4a4a';
+                                    ctx.font = 'bold 20px Cairo';
+                                    ctx.textAlign = 'center';
+                                    ctx.fillText(months[index], bar.x, bar.y - 15);
+                                }
+
+                                // Values inside bars
+                                ctx.fillStyle = '#ffffff';
+                                ctx.textAlign = 'center';
+
+                                if (index === 3) {
+                                    // Last column: "أرباح غير متوقعة"
+                                    ctx.font = 'bold 18px Cairo';
+                                    const lines = ['أرباح', 'غير', 'متوقعة'];
+                                    const lineHeight = 22;
+                                    const startY = bar.y + (bar.height / 2) - ((lines.length - 1) * lineHeight / 2);
+                                    lines.forEach((line, i) => {
+                                        ctx.fillText(line, bar.x, startY + (i * lineHeight));
+                                    });
+                                } else {
+                                    // First 3 columns: Amount + "ربح سنوي"
+                                    const amount = '$' + Math.round(dataset.data[index] / 1000) + 'K';
+                                    const centerY = bar.y + (bar.height / 2);
+
+                                    // Draw amount (bigger)
+                                    ctx.font = 'bold 28px Cairo';
+                                    ctx.fillText(amount, bar.x, centerY - 8);
+
+                                    // Draw "ربح سنوي" (smaller)
+                                    ctx.font = '16px Cairo';
+                                    ctx.fillText('ربح سنوي', bar.x, centerY + 18);
+                                }
+                            });
+                        });
+                    }
+                }]
             });
         });
     </script>
@@ -341,4 +344,4 @@
 
 </body>
 
-</html>
+</html>```
