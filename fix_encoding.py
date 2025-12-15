@@ -383,73 +383,78 @@ html_content = """<!DOCTYPE html>
             </div>
         </section>
 
-        <!-- لجنة تأسيس وتسيير أعمال بنك سويا -->
+        <!-- لجنة تأسيس وتسيير أعمال بنك سويا - Commemorative Plaque (Tableau) -->
         <section class="section">
             <h2 class="section-title">لجنة تأسيس وتسيير أعمال بنك سويا</h2>
-            <div class="team-grid">
-                <!-- Founder -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="assets/avatar_m.png" alt="المؤسس" class="team-img">
+            
+            <div class="plaque-container">
+                <div class="plaque-title-decoration">أعضاء اللجنة التأسيسية</div>
+                
+                <div class="plaque-grid">
+                    <!-- Founder -->
+                    <div class="plaque-item">
+                        <div class="plaque-avatar-wrapper">
+                            <img src="assets/avatar_m.png" alt="المؤسس" class="plaque-avatar">
+                        </div>
+                        <div class="plaque-role">المؤسس</div>
+                        <div class="plaque-name">الاسم الثلاثي</div>
                     </div>
-                    <div class="team-role">المؤسس</div>
-                    <div class="team-name">الاسم الثلاثي</div>
-                </div>
-                <!-- Financial Officer -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="assets/avatar_m.png" alt="مسؤول مالي" class="team-img">
+                    <!-- Financial Officer -->
+                    <div class="plaque-item">
+                        <div class="plaque-avatar-wrapper">
+                            <img src="assets/avatar_m.png" alt="مسؤول مالي" class="plaque-avatar">
+                        </div>
+                        <div class="plaque-role">مسؤول مالي</div>
+                        <div class="plaque-name">الاسم الثلاثي</div>
                     </div>
-                    <div class="team-role">مسؤول مالي</div>
-                    <div class="team-name">الاسم الثلاثي</div>
-                </div>
-                <!-- Technical Officer -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="assets/avatar_m.png" alt="مسؤول تقني" class="team-img">
+                    <!-- Technical Officer -->
+                    <div class="plaque-item">
+                        <div class="plaque-avatar-wrapper">
+                            <img src="assets/avatar_m.png" alt="مسؤول تقني" class="plaque-avatar">
+                        </div>
+                        <div class="plaque-role">مسؤول تقني</div>
+                        <div class="plaque-name">الاسم الثلاثي</div>
                     </div>
-                    <div class="team-role">مسؤول تقني</div>
-                    <div class="team-name">الاسم الثلاثي</div>
-                </div>
-                <!-- Funding Officer -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="assets/avatar_m.png" alt="مسؤول التمويل" class="team-img">
+                    <!-- Funding Officer -->
+                    <div class="plaque-item">
+                        <div class="plaque-avatar-wrapper">
+                            <img src="assets/avatar_m.png" alt="مسؤول التمويل" class="plaque-avatar">
+                        </div>
+                        <div class="plaque-role">مسؤول التمويل</div>
+                        <div class="plaque-name">الاسم الثلاثي</div>
                     </div>
-                    <div class="team-role">مسؤول التمويل</div>
-                    <div class="team-name">الاسم الثلاثي</div>
-                </div>
-                <!-- Contracts Officer -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="assets/avatar_m.png" alt="مسؤول التعاقدات" class="team-img">
+                    <!-- Contracts Officer -->
+                    <div class="plaque-item">
+                        <div class="plaque-avatar-wrapper">
+                            <img src="assets/avatar_m.png" alt="مسؤول التعاقدات" class="plaque-avatar">
+                        </div>
+                        <div class="plaque-role">مسؤول التعاقدات</div>
+                        <div class="plaque-name">الاسم الثلاثي</div>
                     </div>
-                    <div class="team-role">مسؤول التعاقدات</div>
-                    <div class="team-name">الاسم الثلاثي</div>
-                </div>
-                <!-- Senior Member -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="assets/avatar_m.png" alt="كبير الأعضاء" class="team-img">
+                    <!-- Senior Member -->
+                    <div class="plaque-item">
+                        <div class="plaque-avatar-wrapper">
+                            <img src="assets/avatar_m.png" alt="كبير الأعضاء" class="plaque-avatar">
+                        </div>
+                        <div class="plaque-role">كبير الأعضاء</div>
+                        <div class="plaque-name">الاسم الثلاثي</div>
                     </div>
-                    <div class="team-role">كبير الأعضاء</div>
-                    <div class="team-name">الاسم الثلاثي</div>
-                </div>
-                <!-- Secretary -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="assets/avatar_m.png" alt="أمين سر" class="team-img">
+                    <!-- Secretary -->
+                    <div class="plaque-item">
+                        <div class="plaque-avatar-wrapper">
+                            <img src="assets/avatar_m.png" alt="أمين سر" class="plaque-avatar">
+                        </div>
+                        <div class="plaque-role">أمين سر</div>
+                        <div class="plaque-name">الاسم الثلاثي</div>
                     </div>
-                    <div class="team-role">أمين سر</div>
-                    <div class="team-name">الاسم الثلاثي</div>
-                </div>
-                <!-- Coordinator (Female) -->
-                <div class="team-card">
-                    <div class="team-img-wrapper">
-                        <img src="assets/avatar_f.png" alt="منسقة" class="team-img">
+                    <!-- Coordinator (Female) -->
+                    <div class="plaque-item">
+                        <div class="plaque-avatar-wrapper">
+                            <img src="assets/avatar_f.png" alt="منسقة" class="plaque-avatar">
+                        </div>
+                        <div class="plaque-role">منسقة</div>
+                        <div class="plaque-name">الاسم الثلاثي</div>
                     </div>
-                    <div class="team-role">منسقة</div>
-                    <div class="team-name">الاسم الثلاثي</div>
                 </div>
             </div>
         </section>

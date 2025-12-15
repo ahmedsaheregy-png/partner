@@ -542,3 +542,115 @@ a {
         font-size: 0.95rem;
     }
 }
+
+/* Commemorative Plaque (Tableau) Style for Team */
+.plaque-container {
+    background: linear-gradient(to bottom, #06402B, #022015);
+    border: 6px solid #C5A059;
+    /* Gold Frame */
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5), 0 10px 25px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    padding: 2rem 1rem;
+    max-width: 800px;
+    margin: 2rem auto;
+    text-align: center;
+    position: relative;
+    /* Metallic sheen effect overlay */
+}
+
+/* Screw heads in corners for realistic plaque look */
+.plaque-container::before,
+.plaque-container::after {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: radial-gradient(circle, #fff 10%, #C5A059 100%);
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    top: 10px;
+}
+
+.plaque-container::before {
+    left: 10px;
+}
+
+.plaque-container::after {
+    right: 10px;
+}
+
+.plaque-title-decoration {
+    font-family: 'Cairo', sans-serif;
+    color: #C5A059;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(197, 160, 89, 0.3);
+    display: inline-block;
+    padding-bottom: 10px;
+    width: 80%;
+}
+
+.plaque-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+    /* Compact spacing */
+}
+
+.plaque-item {
+    width: 120px;
+    /* Small compact width */
+    text-align: center;
+    position: relative;
+}
+
+.plaque-avatar-wrapper {
+    position: relative;
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 8px;
+}
+
+.plaque-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #C5A059;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    filter: sepia(20%) contrast(110%);
+    /* Slight vintage/gold tint */
+}
+
+.plaque-role {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #ebd39c;
+    /* Gold text */
+    margin-bottom: 2px;
+    line-height: 1.3;
+}
+
+.plaque-name {
+    font-size: 0.75rem;
+    color: #b0c4de;
+    /* Silvery/Light Blue-Grey text */
+    font-weight: 400;
+}
+
+/* Mobile Tweak */
+@media (max-width: 480px) {
+    .plaque-grid {
+        gap: 1rem;
+    }
+
+    .plaque-item {
+        width: 100px;
+    }
+
+    .plaque-avatar-wrapper {
+        width: 55px;
+        height: 55px;
+    }
+}
