@@ -206,6 +206,15 @@ html_content = """<!DOCTYPE html>
                 </ul>
             </div>
 
+            <!-- Styled Chart Title (Replacing JS Title) -->
+            <div class="chart-title-wrapper" style="display: flex; justify-content: flex-end; margin-bottom: 25px; align-items: center;">
+                 <div class="chart-title-box" style="position: relative; background: linear-gradient(135deg, #06402B 0%, #0F5132 100%); color: white; padding: 20px 30px; border-radius: 12px; border-bottom: 4px solid #D1E7DD; box-shadow: 0 10px 20px rgba(0,0,0,0.1); max-width: 650px; text-align: center;">
+                    <h3 style="margin: 0; font-size: 22px; line-height: 1.5; font-family: 'Cairo', sans-serif;">سيناريوهات الأرباح المتوقعة لشركاء المرحلة الأولى<br><span style="color: #ffd700;">خلال 4 سنوات</span> (إجمالي الاستثمار 50 ألف$)</h3>
+                    <!-- Arrow pointing to chart -->
+                    <div style="position: absolute; bottom: -12px; left: 50px; width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 15px solid #0F5132;"></div>
+                 </div>
+            </div>
+
             <!-- Chart Full Width -->
             <div class="chart-container-full" style="width: 100%; height: 500px;">
                 <canvas id="profitChart"></canvas>
@@ -215,11 +224,17 @@ html_content = """<!DOCTYPE html>
                     .chart-container-full {
                         height: 400px !important;
                     }
+                    .chart-title-wrapper {
+                        justify-content: center !important;
+                    }
+                    .chart-title-box h3 {
+                        font-size: 18px !important;
+                    }
                 }
             </style>
         </section>
         
-        <!-- القسم: أين سيتم إنفاق استثمارات المرحلة الأولى؟ -->
+        <!-- قسم: أين سيتم إنفاق استثمارات المرحلة الأولى؟ -->
         <section class="section">
             <h2 class="section-title">أين سيتم إنفاق استثمارات المرحلة الأولى؟</h2>
 
@@ -449,7 +464,7 @@ html_content = """<!DOCTYPE html>
                             display: false
                         },
                         title: {
-                            display: true,
+                            display: false,
                             text: 'سيناريوهات الأرباح المتوقعة لشركاء المرحلة الأولى خلال 4 سنوات (إجمالي الاستثمار 50 ألف$)',
                             font: {
                                 size: window.innerWidth < 768 ? 11 : 16,
