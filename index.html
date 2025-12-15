@@ -366,29 +366,15 @@
                                     const centerY = bar.y + (bar.height / 2);
 
                                     if (index === 0) {
-                                        // First column: Amount on right, "ربح سنوي" on left (2 lines)
-
-                                        // Calculate true vertical center between top and bottom of bar
-                                        // In Chart.js, bar.y is the BOTTOM (lower on screen), so we subtract height
+                                        // First column: Amount and "ربح سنوي" in one horizontal line
                                         const barBottom = bar.y;
                                         const barTop = bar.y - bar.height;
                                         const barCenterY = (barTop + barBottom) / 2;
 
-                                        // Draw amount on the right side - centered vertically
-                                        ctx.font = 'bold 28px Cairo';
-                                        ctx.textAlign = 'right';
-                                        ctx.fillText(amount, bar.x + 55, barCenterY);
-
-                                        // Draw "ربح" on the left (top line) - centered vertically
-                                        ctx.font = 'bold 14px Cairo';
-                                        ctx.textAlign = 'left';
-                                        ctx.fillText('ربح', bar.x - 55, barCenterY - 8);
-
-                                        // Draw "سنوي" on the left (bottom line) - centered vertically
-                                        ctx.fillText('سنوي', bar.x - 55, barCenterY + 8);
-
-                                        // Reset text alignment
+                                        // Draw the full text in one line: "amount ربح سنوي"
+                                        ctx.font = 'bold 18px Cairo';
                                         ctx.textAlign = 'center';
+                                        ctx.fillText(amount + ' ربح سنوي', bar.x, barCenterY);
                                     } else {
                                         // Columns 2 and 3: Original vertical layout (Amount on top, "ربح سنوي" below)
                                         ctx.font = 'bold 28px Cairo';
