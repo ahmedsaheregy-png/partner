@@ -322,9 +322,7 @@
                                     ctx.fillStyle = '#4a4a4a';
                                     ctx.font = 'bold 20px Cairo';
                                     ctx.textAlign = 'center';
-                                    // bar.y is the bottom, bar.y - bar.height is the top
-                                    const barTop = bar.y - bar.height;
-                                    ctx.fillText(monthLabels[index], bar.x, barTop - 10);
+                                    ctx.fillText(monthLabels[index], bar.x, bar.y - 15);
                                 }
 
                                 // Values inside bars
