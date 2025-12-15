@@ -225,18 +225,88 @@
     </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', async function () {
             Chart.register(ChartDataLabels);
+
+            // Google Sheet URL (JSON format - works without CORS issues)
+            // Format: /gviz/tq?tqx=out:json&gid=GID
+            const SHEET_ID = '1NGAg4AbmAFd4Cyx4NvE_nlQQXRp2B0IYR_Fuw_Zr0eI';
+            const GID = '1479760171';
+            const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${GID}`;
+
+            // Default values (fallback)
+            let memberCounts = [4095, 8191, 16383];
+            let months = [12, 18, 24];
+            let profits = [24851, 68444, 189973];
+
+            // Fetch data from Google Sheet
+            try {
+                const response = await fetch(SHEET_URL);
+                const text = await response.text();
+
+                console.log('Raw Response (first 200 chars):', text.substring(0, 200));
+
+                // Remove the JSON-P wrapper using regex to get pure JSON
+                const jsonMatch = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\);?$/);
+                if (!jsonMatch) {
+                    throw new Error('Could not extract JSON from response');
+                }
+
+                const data = JSON.parse(jsonMatch[1]);
+                console.log('Google Sheets Data:', data);
+
+                // Extract rows from the table
+                const rows = data.table.rows;
+                console.log('Total rows:', rows.length);
+
+                // Row indices: 2, 3, 4 (after header row at index 1)
+                // Column C (index 2) = profit, Column H (index 7) = month, Column I (index 8) = member count
+
+                if (rows.length >= 5) {
+                    memberCounts = [
+                        parseInt(rows[2]?.c[8]?.v) || 4095,
+                        parseInt(rows[3]?.c[8]?.v) || 8191,
+                        parseInt(rows[4]?.c[8]?.v) || 16383
+                    ];
+
+                    months = [
+                        parseInt(rows[2]?.c[7]?.v) || 12,
+                        parseInt(rows[3]?.c[7]?.v) || 18,
+                        parseInt(rows[4]?.c[7]?.v) || 24
+                    ];
+
+                    profits = [
+                        parseFloat(rows[2]?.c[2]?.v) || 24851,
+                        parseFloat(rows[3]?.c[2]?.v) || 68444,
+                        parseFloat(rows[4]?.c[2]?.v) || 189973
+                    ];
+
+                    console.log('Successfully extracted data from Google Sheets');
+                } else {
+                    console.warn('Not enough rows in sheet, using defaults');
+                }
+
+                console.log('Final Data:', { memberCounts, months, profits });
+            } catch (error) {
+                console.error('Error fetching Google Sheet data:', error);
+                console.log('Using default values');
+                // Will use default values
+            }
 
             const ctx = document.getElementById('profitChart').getContext('2d');
 
             new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['2047\nعضو', '8191\nعضو', '32766\nعضو', '؟'],
+                    labels: [
+                        memberCounts[0] + '\nعضو',
+                        memberCounts[1] + '\nعضو',
+                        memberCounts[2] + '\nعضو',
+                        '؟'
+                    ],
                     datasets: [{
                         label: 'أرباح الشريك التقني (بالدولار)',
-                        data: [42000, 94000, 198000, 250000],
+                        data: [...profits, 250000],
                         backgroundColor: [
                             'rgba(156, 136, 255, 0.85)',
                             'rgba(94, 129, 244, 0.85)',
@@ -294,7 +364,7 @@
                     id: 'monthLabels',
                     afterDatasetsDraw: function (chart) {
                         const ctx = chart.ctx;
-                        const months = ['الشهر 18', 'الشهر 24', 'الشهر 36'];
+                        const monthLabels = months.map(m => 'الشهر ' + m);
 
                         chart.data.datasets.forEach((dataset, i) => {
                             const meta = chart.getDatasetMeta(i);
@@ -304,7 +374,7 @@
                                     ctx.fillStyle = '#4a4a4a';
                                     ctx.font = 'bold 20px Cairo';
                                     ctx.textAlign = 'center';
-                                    ctx.fillText(months[index], bar.x, bar.y - 15);
+                                    ctx.fillText(monthLabels[index], bar.x, bar.y - 15);
                                 }
 
                                 // Values inside bars
@@ -321,17 +391,40 @@
                                         ctx.fillText(line, bar.x, startY + (i * lineHeight));
                                     });
                                 } else {
-                                    // First 3 columns: Amount + "ربح سنوي"
                                     const amount = '$' + Math.round(dataset.data[index] / 1000) + 'K';
                                     const centerY = bar.y + (bar.height / 2);
 
-                                    // Draw amount (bigger)
-                                    ctx.font = 'bold 28px Cairo';
-                                    ctx.fillText(amount, bar.x, centerY - 8);
+                                    if (index === 0) {
+                                        // First column: Amount on right, "ربح سنوي" on left (2 lines)
 
-                                    // Draw "ربح سنوي" (smaller)
-                                    ctx.font = '16px Cairo';
-                                    ctx.fillText('ربح سنوي', bar.x, centerY + 18);
+                                        // Calculate true vertical center between top and bottom of bar
+                                        const barTop = bar.y;
+                                        const barBottom = bar.y + bar.height;
+                                        const barCenterY = (barTop + barBottom) / 2;
+
+                                        // Draw amount on the right side - centered vertically
+                                        ctx.font = 'bold 28px Cairo';
+                                        ctx.textAlign = 'right';
+                                        ctx.fillText(amount, bar.x + 55, barCenterY);
+
+                                        // Draw "ربح" on the left (top line) - centered vertically
+                                        ctx.font = 'bold 14px Cairo';
+                                        ctx.textAlign = 'left';
+                                        ctx.fillText('ربح', bar.x - 55, barCenterY - 8);
+
+                                        // Draw "سنوي" on the left (bottom line) - centered vertically
+                                        ctx.fillText('سنوي', bar.x - 55, barCenterY + 8);
+
+                                        // Reset text alignment
+                                        ctx.textAlign = 'center';
+                                    } else {
+                                        // Columns 2 and 3: Original vertical layout (Amount on top, "ربح سنوي" below)
+                                        ctx.font = 'bold 28px Cairo';
+                                        ctx.fillText(amount, bar.x, centerY - 10);
+
+                                        ctx.font = 'bold 18px Cairo';
+                                        ctx.fillText('ربح سنوي', bar.x, centerY + 15);
+                                    }
                                 }
                             });
                         });
