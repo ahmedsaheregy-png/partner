@@ -496,7 +496,7 @@ html_content = """<!DOCTYPE html>
                                 // Month labels above bars (first 3 only)
                                 if (index < 3) {
                                     ctx.fillStyle = '#4a4a4a';
-                                    ctx.font = 'bold 20px Cairo';
+                                    ctx.font = 'bold 26px Cairo'; // Increased from 20px
                                     ctx.textAlign = 'center';
                                     ctx.fillText(monthLabels[index], bar.x, bar.y - 15);
                                 }
@@ -507,9 +507,9 @@ html_content = """<!DOCTYPE html>
 
                                 if (index === 3) {
                                     // Last column: "أرباح غير متوقعة"
-                                    ctx.font = 'bold 18px Cairo';
+                                    ctx.font = 'bold 22px Cairo'; // Increased from 18px
                                     const lines = ['أرباح', 'غير', 'متوقعة'];
-                                    const lineHeight = 22;
+                                    const lineHeight = 26;
                                     const startY = bar.y + (bar.height / 2) - ((lines.length - 1) * lineHeight / 2);
                                     lines.forEach((line, i) => {
                                         ctx.fillText(line, bar.x, startY + (i * lineHeight));
@@ -525,16 +525,16 @@ html_content = """<!DOCTYPE html>
                                         const line1 = 'ربح';
                                         const line2 = 'سنوي';
                                         
-                                        // Increase font size for amount
-                                        ctx.font = 'bold 26px Cairo';
+                                        // Massive font size for amount
+                                        ctx.font = 'bold 34px Cairo'; // Increased from 26px
                                         const amountWidth = ctx.measureText(amountText).width;
                                         
-                                        ctx.font = 'bold 14px Cairo'; 
+                                        ctx.font = 'bold 20px Cairo'; // Increased from 14px
                                         const line1Width = ctx.measureText(line1).width;
                                         const line2Width = ctx.measureText(line2).width;
                                         const stackWidth = Math.max(line1Width, line2Width);
                                         
-                                        const gap = 8;
+                                        const gap = 10;
                                         const totalWidth = stackWidth + gap + amountWidth;
                                         
                                         // Calculate starting X to center the whole block
@@ -546,28 +546,28 @@ html_content = """<!DOCTYPE html>
                                         ctx.textAlign = 'left';
                                         ctx.textBaseline = 'middle';
                                         
-                                        ctx.font = 'bold 14px Cairo';
+                                        ctx.font = 'bold 20px Cairo';
                                         // Align stacked text center relative to its own stackWidth
                                         const line1Offset = (stackWidth - line1Width) / 2;
                                         const line2Offset = (stackWidth - line2Width) / 2;
                                         
-                                        ctx.fillText(line1, startX + line1Offset, centerY - 9);
-                                        ctx.fillText(line2, startX + line2Offset, centerY + 9);
+                                        ctx.fillText(line1, startX + line1Offset, centerY - 12);
+                                        ctx.fillText(line2, startX + line2Offset, centerY + 12);
                                         
                                         // Draw Amount (Right side)
-                                        ctx.font = 'bold 26px Cairo';
+                                        ctx.font = 'bold 34px Cairo';
                                         ctx.fillText(amountText, startX + stackWidth + gap, centerY);
                                         
                                         // Reset context properties for other bars
                                         ctx.textBaseline = 'alphabetic';
                                         ctx.textAlign = 'center';
                                     } else {
-                                        // Columns 2 and 3: Original vertical layout (Amount on top, "ربح سنوي" below)
-                                        ctx.font = 'bold 28px Cairo';
-                                        ctx.fillText(amount, bar.x, centerY - 10);
+                                        // Columns 2 and 3
+                                        ctx.font = 'bold 38px Cairo'; // Increased from 28px
+                                        ctx.fillText(amount, bar.x, centerY - 12);
 
-                                        ctx.font = 'bold 18px Cairo';
-                                        ctx.fillText('ربح سنوي', bar.x, centerY + 15);
+                                        ctx.font = 'bold 22px Cairo'; // Increased from 18px
+                                        ctx.fillText('ربح سنوي', bar.x, centerY + 20);
                                     }
                                 }
                             });
