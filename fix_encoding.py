@@ -1,4 +1,7 @@
-<!DOCTYPE html>
+
+import os
+
+html_content = """<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
 <head>
@@ -415,9 +418,9 @@
                 type: 'bar',
                 data: {
                     labels: [
-                        memberCounts[0] + '\nعضو',
-                        memberCounts[1] + '\nعضو',
-                        memberCounts[2] + '\nعضو',
+                        memberCounts[0] + '\\nعضو',
+                        memberCounts[1] + '\\nعضو',
+                        memberCounts[2] + '\\nعضو',
                         '؟'
                     ],
                     datasets: [{
@@ -578,4 +581,7 @@
 
 </body>
 
-</html>
+</html>"""
+
+with open('index.html', 'w', encoding='utf-8') as f:
+    f.write(html_content)
