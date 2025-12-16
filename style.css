@@ -349,9 +349,11 @@ a {
 }
 
 .stat-label {
-    font-size: 0.85rem;
+    font-size: 1.5rem;
+    /* Increased to huge size */
     color: #555;
-    font-weight: 600;
+    font-weight: 800;
+    /* Extra Bold */
 }
 
 .stat-value {
@@ -361,10 +363,11 @@ a {
 }
 
 .stat-subtitle {
-    font-size: 0.75rem;
+    font-size: 1.25rem;
+    /* Increased */
     color: #777;
-    margin-top: -5px;
-    font-weight: 500;
+    margin-top: -3px;
+    font-weight: 700;
 }
 
 .features-list {
@@ -418,11 +421,15 @@ a {
 .features-list small {
     display: block;
     margin-right: 2rem;
-    color: #555;
-    font-size: 0.95rem;
+    color: #333;
+    /* Darker */
+    font-size: 1.4rem;
+    /* Massive desktop size */
     /* Larger Explanation */
-    margin-top: 5px;
+    margin-top: 10px;
     line-height: 1.6;
+    font-weight: 700;
+    /* Bold */
 }
 
 .chart-column {
@@ -462,9 +469,19 @@ a {
     }
 
     .features-list small {
-        font-size: 1.1rem !important;
-        line-height: 1.6;
-        color: #444;
+        font-size: 1.8rem !important;
+        /* Huge mobile size with !important */
+        line-height: 1.5;
+        color: #222;
+        font-weight: 700;
+    }
+
+    .stat-label {
+        font-size: 1.6rem !important;
+    }
+
+    .stat-subtitle {
+        font-size: 1.3rem !important;
     }
 }
 
