@@ -207,15 +207,25 @@
 
             <!-- Styled Chart Title (Replacing JS Title) -->
             <div class="chart-title-wrapper"
-                style="display: flex; justify-content: flex-end; margin-bottom: 25px; align-items: center;">
+                style="display: flex; justify-content: space-between; margin-bottom: 35px; align-items: flex-end;">
+
+                <!-- Rotate Warning (Empty Space Area) -->
+                <div class="rotate-warning"
+                    style="display: flex; flex-direction: column; align-items: center; opacity: 0.8; margin-left: 20px;">
+                    <img src="assets/icon_rotate.png" alt="Rotate Device"
+                        style="width: 50px; height: auto; margin-bottom: 8px;">
+                    <span style="font-size: 14px; font-weight: bold; color: #06402B;">اقلب الجوال للوضع الأفقي</span>
+                </div>
+
+                <!-- Title Box -->
                 <div class="chart-title-box"
                     style="position: relative; background: linear-gradient(135deg, #06402B 0%, #0F5132 100%); color: white; padding: 20px 30px; border-radius: 12px; border-bottom: 4px solid #D1E7DD; box-shadow: 0 10px 20px rgba(0,0,0,0.1); max-width: 650px; text-align: center;">
-                    <h3 style="margin: 0; font-size: 22px; line-height: 1.5; font-family: 'Cairo', sans-serif;">
-                        سيناريوهات الأرباح المتوقعة لشركاء المرحلة الأولى<br><span style="color: #ffd700;">خلال 4
-                            سنوات</span> (إجمالي الاستثمار 50 ألف$)</h3>
+                    <h3 style="margin: 0; font-size: 20px; line-height: 1.5; font-family: 'Cairo', sans-serif;">
+                        سيناريوهات الأرباح المتوقعة لشركاء المرحلة الأولى خلال 4 سنوات <span
+                            style="color: #ffd700;">(إجمالي الاستثمار 50 ألف$)</span></h3>
                     <!-- Arrow pointing to chart -->
                     <div
-                        style="position: absolute; bottom: -12px; left: 50px; width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 15px solid #0F5132;">
+                        style="position: absolute; bottom: -30px; right: 50px; width: 0; height: 0; border-left: 30px solid transparent; border-right: 30px solid transparent; border-top: 30px solid #0F5132;">
                     </div>
                 </div>
             </div>
