@@ -269,166 +269,249 @@
             <h2 class="section-title">أين سيتم إنفاق استثمارات المرحلة الأولى؟</h2>
 
             <div style="overflow-x: auto; margin-top: 30px;">
-                <table
-                    style="width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                    <thead style="background: #e0f2f1; color: #333; border-bottom: 2px solid #009688;">
+                <style>
+                    .premium-table {
+                        width: 100%;
+                        border-collapse: separate;
+                        border-spacing: 0;
+                        background: #fff;
+                        border-radius: 16px;
+                        overflow: hidden;
+                        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+                        margin-bottom: 20px;
+                        font-family: 'Cairo', sans-serif;
+                    }
+
+                    .premium-table thead {
+                        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+                        color: #fff;
+                    }
+
+                    .premium-table th {
+                        padding: 18px 15px;
+                        font-weight: 700;
+                        font-size: 0.95rem;
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                    }
+
+                    .premium-table tbody tr {
+                        transition: all 0.3s ease;
+                        border-bottom: 1px solid #f0f0f0;
+                    }
+
+                    .premium-table tbody tr:last-child {
+                        border-bottom: none;
+                    }
+
+                    .premium-table tbody tr:hover {
+                        background-color: #f8faff;
+                        transform: scale(1.005);
+                        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+                        z-index: 10;
+                        position: relative;
+                    }
+
+                    .premium-table td {
+                        padding: 15px;
+                        font-size: 0.95rem;
+                        color: #444;
+                        vertical-align: middle;
+                    }
+
+                    .premium-table .num-col {
+                        font-weight: 600;
+                        color: #1e3c72;
+                        font-family: 'Roboto', sans-serif;
+                        /* For better number rendering */
+                    }
+
+                    .premium-table .price-col {
+                        font-weight: 700;
+                        color: #27ae60;
+                    }
+
+                    .premium-table tfoot {
+                        background: #2c3e50;
+                        color: #fff;
+                    }
+
+                    .premium-table tfoot td {
+                        padding: 20px 15px;
+                        color: #fff;
+                        font-size: 1.1rem;
+                    }
+
+                    .row-number {
+                        background: rgba(30, 60, 114, 0.1);
+                        color: #1e3c72;
+                        width: 30px;
+                        height: 30px;
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 50%;
+                        font-weight: bold;
+                        font-size: 0.8rem;
+                    }
+                </style>
+
+                <table class="premium-table">
+                    <thead>
                         <tr>
-                            <th style="padding: 15px; text-align: center; font-weight: bold; width: 50px;">#</th>
-                            <th style="padding: 15px; text-align: right; font-weight: bold;">المنصب / نوع المصروف</th>
-                            <th style="padding: 15px; text-align: center; font-weight: bold;">عدد الشهور<br>أو التكرار
-                            </th>
-                            <th style="padding: 15px; text-align: center; font-weight: bold;">المبلغ</th>
-                            <th style="padding: 15px; text-align: center; font-weight: bold;">إج.مصروفات مدة<br>التأسيس
-                                $</th>
+                            <th style="text-align: center; width: 60px;">#</th>
+                            <th style="text-align: right;">المنصب / نوع المصروف</th>
+                            <th style="text-align: center;">المدة / التكرار</th>
+                            <th style="text-align: center;">المبلغ الشهري</th>
+                            <th style="text-align: center;">الإجمالي ($)</th>
                         </tr>
                     </thead>
-                    <tbody style="color: #333;">
+                    <tbody>
                         <!-- 1. Accountant -->
-                        <tr style="border-bottom: 1px solid #ddd; background-color: #ffffff;">
-                            <td style="padding: 12px; text-align: center; font-weight: bold;">1</td>
-                            <td style="padding: 12px; text-align: right;">محاسب (دوام جزئي)</td>
-                            <td style="padding: 12px; text-align: center;">6</td>
-                            <td style="padding: 12px; text-align: center;">300 $</td>
-                            <td style="padding: 12px; text-align: center; font-weight: bold; color: #333;">1800 $</td>
+                        <tr>
+                            <td style="text-align: center;"><span class="row-number">1</span></td>
+                            <td style="text-align: right; font-weight: 600;">محاسب (دوام جزئي)</td>
+                            <td style="text-align: center;">6</td>
+                            <td style="text-align: center;" class="num-col">300 $</td>
+                            <td style="text-align: center;" class="price-col">1,800 $</td>
                         </tr>
                         <!-- 2. Contracts Manager -->
-                        <tr style="border-bottom: 1px solid #ddd; background-color: #ffffff;">
-                            <td style="padding: 12px; text-align: center; font-weight: bold;">2</td>
-                            <td style="padding: 12px; text-align: right;">مسؤول تعاقدات</td>
-                            <td style="padding: 12px; text-align: center;">6</td>
-                            <td style="padding: 12px; text-align: center;">750 $</td>
-                            <td style="padding: 12px; text-align: center; font-weight: bold; color: #333;">4500 $</td>
+                        <tr>
+                            <td style="text-align: center;"><span class="row-number">2</span></td>
+                            <td style="text-align: right; font-weight: 600;">مسؤول تعاقدات</td>
+                            <td style="text-align: center;">6</td>
+                            <td style="text-align: center;" class="num-col">750 $</td>
+                            <td style="text-align: center;" class="price-col">4,500 $</td>
                         </tr>
                         <!-- 3. Asst Contracts -->
-                        <tr style="border-bottom: 1px solid #ddd; background-color: #ffffff;">
-                            <td style="padding: 12px; text-align: center; font-weight: bold;">3</td>
-                            <td style="padding: 12px; text-align: right;">مساعد م.تعاقدات</td>
-                            <td style="padding: 12px; text-align: center;">6</td>
-                            <td style="padding: 12px; text-align: center;">750 $</td>
-                            <td style="padding: 12px; text-align: center; font-weight: bold; color: #333;">4500 $</td>
+                        <tr>
+                            <td style="text-align: center;"><span class="row-number">3</span></td>
+                            <td style="text-align: right; font-weight: 600;">مساعد م.تعاقدات</td>
+                            <td style="text-align: center;">6</td>
+                            <td style="text-align: center;" class="num-col">750 $</td>
+                            <td style="text-align: center;" class="price-col">4,500 $</td>
                         </tr>
                         <!-- 4. Senior Member Marketing -->
-                        <tr style="border-bottom: 1px solid #ddd; background-color: #ffffff;">
-                            <td style="padding: 12px; text-align: center; font-weight: bold;">4</td>
-                            <td style="padding: 12px; text-align: right;">كبير الأعضاء (تسويق)</td>
-                            <td style="padding: 12px; text-align: center;">6</td>
-                            <td style="padding: 12px; text-align: center;">500 $</td>
-                            <td style="padding: 12px; text-align: center; font-weight: bold; color: #333;">3000 $</td>
+                        <tr>
+                            <td style="text-align: center;"><span class="row-number">4</span></td>
+                            <td style="text-align: right; font-weight: 600;">كبير الأعضاء (تسويق)</td>
+                            <td style="text-align: center;">6</td>
+                            <td style="text-align: center;" class="num-col">500 $</td>
+                            <td style="text-align: center;" class="price-col">3,000 $</td>
                         </tr>
                         <!-- 5. Senior Dev -->
-                        <tr style="border-bottom: 1px solid #ddd; background-color: #ffffff;">
-                            <td style="padding: 12px; text-align: center; font-weight: bold;">5</td>
-                            <td style="padding: 12px; text-align: right;">مبرمج سينيور</td>
-                            <td style="padding: 12px; text-align: center;">6</td>
-                            <td style="padding: 12px; text-align: center;">1000 $</td>
-                            <td style="padding: 12px; text-align: center; font-weight: bold; color: #333;">6000 $</td>
+                        <tr>
+                            <td style="text-align: center;"><span class="row-number">5</span></td>
+                            <td style="text-align: right; font-weight: 600;">مبرمج سينيور</td>
+                            <td style="text-align: center;">6</td>
+                            <td style="text-align: center;" class="num-col">1,000 $</td>
+                            <td style="text-align: center;" class="price-col">6,000 $</td>
                         </tr>
                         <!-- 6. Junior Dev -->
-                        <tr style="border-bottom: 1px solid #ddd; background-color: #ffffff;">
-                            <td style="padding: 12px; text-align: center; font-weight: bold;">6</td>
-                            <td style="padding: 12px; text-align: right;">مبرمج جونيور</td>
-                            <td style="padding: 12px; text-align: center;">3</td>
-                            <td style="padding: 12px; text-align: center;">800 $</td>
-                            <td style="padding: 12px; text-align: center; font-weight: bold; color: #333;">2400 $</td>
+                        <tr>
+                            <td style="text-align: center;"><span class="row-number">6</span></td>
+                            <td style="text-align: right; font-weight: 600;">مبرمج جونيور</td>
+                            <td style="text-align: center;">3</td>
+                            <td style="text-align: center;" class="num-col">800 $</td>
+                            <td style="text-align: center;" class="price-col">2,400 $</td>
                         </tr>
                         <!-- 7. Admin Manager -->
-                        <tr style="border-bottom: 1px solid #ddd; background-color: #ffffff;">
-                            <td style="padding: 12px; text-align: center; font-weight: bold;">7</td>
-                            <td style="padding: 12px; text-align: right;">مدير اداري</td>
-                            <td style="padding: 12px; text-align: center;">6</td>
-                            <td style="padding: 12px; text-align: center;">750 $</td>
-                            <td style="padding: 12px; text-align: center; font-weight: bold; color: #333;">4500 $</td>
+                        <tr>
+                            <td style="text-align: center;"><span class="row-number">7</span></td>
+                            <td style="text-align: right; font-weight: 600;">مدير اداري</td>
+                            <td style="text-align: center;">6</td>
+                            <td style="text-align: center;" class="num-col">750 $</td>
+                            <td style="text-align: center;" class="price-col">4,500 $</td>
                         </tr>
                         <!-- 8. Secretary -->
-                        <tr style="border-bottom: 1px solid #ddd; background-color: #ffffff;">
-                            <td style="padding: 12px; text-align: center; font-weight: bold;">8</td>
-                            <td style="padding: 12px; text-align: right;">سكرتارية</td>
-                            <td style="padding: 12px; text-align: center;">6</td>
-                            <td style="padding: 12px; text-align: center;">500 $</td>
-                            <td style="padding: 12px; text-align: center; font-weight: bold; color: #333;">3000 $</td>
+                        <tr>
+                            <td style="text-align: center;"><span class="row-number">8</span></td>
+                            <td style="text-align: right; font-weight: 600;">سكرتارية</td>
+                            <td style="text-align: center;">6</td>
+                            <td style="text-align: center;" class="num-col">500 $</td>
+                            <td style="text-align: center;" class="price-col">3,000 $</td>
                         </tr>
-                        <!-- 9. Transport/Calls (Gray Background Start) -->
-                        <tr style="border-bottom: 1px solid #b0bec5; background-color: #cfd8dc;">
-                            <td style="padding: 12px; text-align: center; font-weight: bold;">9</td>
-                            <td style="padding: 12px; text-align: right;">انتقالات - اتصالات - دعوات</td>
-                            <td style="padding: 12px; text-align: center;">6</td>
-                            <td style="padding: 12px; text-align: center;">1000 $</td>
-                            <td style="padding: 12px; text-align: center; font-weight: bold; color: #333;">6000 $</td>
+                        <!-- 9. Transport/Calls -->
+                        <tr>
+                            <td style="text-align: center;"><span class="row-number">9</span></td>
+                            <td style="text-align: right;">انتقالات - اتصالات - دعوات</td>
+                            <td style="text-align: center;">6</td>
+                            <td style="text-align: center;" class="num-col">1,000 $</td>
+                            <td style="text-align: center;" class="price-col">6,000 $</td>
                         </tr>
                         <!-- 10. Other -->
-                        <tr style="border-bottom: 1px solid #b0bec5; background-color: #cfd8dc;">
-                            <td style="padding: 12px; text-align: center; font-weight: bold;">10</td>
-                            <td style="padding: 12px; text-align: right;">أخرى</td>
-                            <td style="padding: 12px; text-align: center;">6</td>
-                            <td style="padding: 12px; text-align: center;">500 $</td>
-                            <td style="padding: 12px; text-align: center; font-weight: bold; color: #333;">3000 $</td>
+                        <tr>
+                            <td style="text-align: center;"><span class="row-number">10</span></td>
+                            <td style="text-align: right;">أخرى</td>
+                            <td style="text-align: center;">6</td>
+                            <td style="text-align: center;" class="num-col">500 $</td>
+                            <td style="text-align: center;" class="price-col">3,000 $</td>
                         </tr>
                         <!-- 11. Legal -->
-                        <tr style="border-bottom: 1px solid #b0bec5; background-color: #cfd8dc;">
-                            <td style="padding: 12px; text-align: center; font-weight: bold;">11</td>
-                            <td style="padding: 12px; text-align: right;">خدمات قانونية ومالية</td>
-                            <td style="padding: 12px; text-align: center;">6</td>
-                            <td style="padding: 12px; text-align: center;">300 $</td>
-                            <td style="padding: 12px; text-align: center; font-weight: bold; color: #333;">1800 $</td>
+                        <tr>
+                            <td style="text-align: center;"><span class="row-number">11</span></td>
+                            <td style="text-align: right;">خدمات قانونية ومالية</td>
+                            <td style="text-align: center;">6</td>
+                            <td style="text-align: center;" class="num-col">300 $</td>
+                            <td style="text-align: center;" class="price-col">1,800 $</td>
                         </tr>
                         <!-- 12. Tech Services -->
-                        <tr style="border-bottom: 1px solid #b0bec5; background-color: #cfd8dc;">
-                            <td style="padding: 12px; text-align: center; font-weight: bold;">12</td>
-                            <td style="padding: 12px; text-align: right;">خدمات تقنية</td>
-                            <td style="padding: 12px; text-align: center;">6</td>
-                            <td style="padding: 12px; text-align: center;">500 $</td>
-                            <td style="padding: 12px; text-align: center; font-weight: bold; color: #333;">3000 $</td>
+                        <tr>
+                            <td style="text-align: center;"><span class="row-number">12</span></td>
+                            <td style="text-align: right;">خدمات تقنية</td>
+                            <td style="text-align: center;">6</td>
+                            <td style="text-align: center;" class="num-col">500 $</td>
+                            <td style="text-align: center;" class="price-col">3,000 $</td>
                         </tr>
                         <!-- 13. Laptop -->
-                        <tr style="border-bottom: 1px solid #b0bec5; background-color: #cfd8dc;">
-                            <td style="padding: 12px; text-align: center; font-weight: bold;">13</td>
-                            <td style="padding: 12px; text-align: right;">لاب توب</td>
-                            <td style="padding: 12px; text-align: center;">2</td>
-                            <td style="padding: 12px; text-align: center;">750 $</td>
-                            <td style="padding: 12px; text-align: center; font-weight: bold; color: #333;">1500 $</td>
+                        <tr>
+                            <td style="text-align: center;"><span class="row-number">13</span></td>
+                            <td style="text-align: right;">لاب توب</td>
+                            <td style="text-align: center;">2</td>
+                            <td style="text-align: center;" class="num-col">750 $</td>
+                            <td style="text-align: center;" class="price-col">1,500 $</td>
                         </tr>
                         <!-- 14. Motorcycle -->
-                        <tr style="border-bottom: 1px solid #b0bec5; background-color: #cfd8dc;">
-                            <td style="padding: 12px; text-align: center; font-weight: bold;">14</td>
-                            <td style="padding: 12px; text-align: right;">موتوسكل</td>
-                            <td style="padding: 12px; text-align: center;">1</td>
-                            <td style="padding: 12px; text-align: center;">1000 $</td>
-                            <td style="padding: 12px; text-align: center; font-weight: bold; color: #333;">1000 $</td>
+                        <tr>
+                            <td style="text-align: center;"><span class="row-number">14</span></td>
+                            <td style="text-align: right;">موتوسكل</td>
+                            <td style="text-align: center;">1</td>
+                            <td style="text-align: center;" class="num-col">1,000 $</td>
+                            <td style="text-align: center;" class="price-col">1,000 $</td>
                         </tr>
                         <!-- 15. Previous Expenses -->
-                        <tr style="border-bottom: 1px solid #b0bec5; background-color: #cfd8dc;">
-                            <td style="padding: 12px; text-align: center; font-weight: bold;">15</td>
-                            <td style="padding: 12px; text-align: right;">مصروفات سابقة</td>
-                            <td style="padding: 12px; text-align: center;">1</td>
-                            <td style="padding: 12px; text-align: center;">1000 $</td>
-                            <td style="padding: 12px; text-align: center; font-weight: bold; color: #333;">1000 $</td>
+                        <tr>
+                            <td style="text-align: center;"><span class="row-number">15</span></td>
+                            <td style="text-align: right;">مصروفات سابقة</td>
+                            <td style="text-align: center;">1</td>
+                            <td style="text-align: center;" class="num-col">1,000 $</td>
+                            <td style="text-align: center;" class="price-col">1,000 $</td>
                         </tr>
                         <!-- 16. Temporary Office -->
-                        <tr style="border-bottom: 1px solid #b0bec5; background-color: #cfd8dc;">
-                            <td style="padding: 12px; text-align: center; font-weight: bold;">16</td>
-                            <td style="padding: 12px; text-align: right;">مقر مؤقت</td>
-                            <td style="padding: 12px; text-align: center;">6</td>
-                            <td style="padding: 12px; text-align: center;">200 $</td>
-                            <td style="padding: 12px; text-align: center; font-weight: bold; color: #333;">1200 $</td>
+                        <tr>
+                            <td style="text-align: center;"><span class="row-number">16</span></td>
+                            <td style="text-align: right;">مقر مؤقت</td>
+                            <td style="text-align: center;">6</td>
+                            <td style="text-align: center;" class="num-col">200 $</td>
+                            <td style="text-align: center;" class="price-col">1,200 $</td>
                         </tr>
                         <!-- 17. Reserve -->
-                        <tr style="border-bottom: 1px solid #b0bec5; background-color: #cfd8dc;">
-                            <td style="padding: 12px; text-align: center; font-weight: bold;">17</td>
-                            <td style="padding: 12px; text-align: right;">احتياطي نقدي</td>
-                            <td style="padding: 12px; text-align: center;">1</td>
-                            <td style="padding: 12px; text-align: center;">5000 $</td>
-                            <td style="padding: 12px; text-align: center; font-weight: bold; color: #333;">5000 $</td>
+                        <tr style="background: #fff8e1;">
+                            <td style="text-align: center;"><span class="row-number">17</span></td>
+                            <td style="text-align: right; color: #b76e00; font-weight: bold;">احتياطي نقدي</td>
+                            <td style="text-align: center;">1</td>
+                            <td style="text-align: center;" class="num-col">5,000 $</td>
+                            <td style="text-align: center;" class="price-col">5,000 $</td>
                         </tr>
                     </tbody>
-                    <tfoot style="font-weight: bold; border-top: 3px solid #667eea;">
+                    <tfoot>
                         <tr>
+                            <td colspan="3" style="text-align: right; font-weight: bold;">الإجمالي الكلي (TOTAL + 3%)
+                            </td>
                             <td colspan="2"
-                                style="padding: 15px; text-align: center; background-color: #1a237e; color: white; font-family: sans-serif;">
-                                TOTAL + 3%</td>
-                            <td colspan="2" style="padding: 15px; background-color:white;"></td>
-                            <td
-                                style="padding: 15px; text-align: center; font-size: 1.2em; background-color: #1b5e20; color: white;">
-                                54796 $</td>
+                                style="text-align: center; font-weight: 800; font-size: 1.4rem; color: #2ecc71; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                                54,796 $</td>
                         </tr>
                     </tfoot>
                 </table>
