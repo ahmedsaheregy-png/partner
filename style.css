@@ -361,7 +361,8 @@ a {
 }
 
 .stat-subtitle {
-    font-size: 0.95rem;
+    font-size: 1.1rem;
+    /* Increased 15% from 0.95rem */
     color: #777;
     margin-top: -3px;
     font-weight: 600;
@@ -476,7 +477,8 @@ a {
     }
 
     .stat-subtitle {
-        font-size: 0.95rem !important;
+        font-size: 1.1rem !important;
+        /* Increased 15% from 0.95rem */
     }
 }
 
