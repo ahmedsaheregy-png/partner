@@ -207,15 +207,7 @@
 
             <!-- Styled Chart Title (Replacing JS Title) -->
             <div class="chart-title-wrapper"
-                style="display: flex; justify-content: space-between; margin-bottom: 35px; align-items: flex-end;">
-
-                <!-- Rotate Warning (Empty Space Area) -->
-                <div class="rotate-warning"
-                    style="display: flex; flex-direction: column; align-items: center; opacity: 0.8; margin-left: 20px;">
-                    <img src="assets/icon_rotate.png" alt="Rotate Device"
-                        style="width: 50px; height: auto; margin-bottom: 8px;">
-                    <span style="font-size: 14px; font-weight: bold; color: #06402B;">اقلب الجوال للوضع الأفقي</span>
-                </div>
+                style="display: flex; justify-content: center; margin-bottom: 55px; align-items: center;">
 
                 <!-- Title Box -->
                 <div class="chart-title-box"
@@ -226,6 +218,15 @@
                     <!-- Arrow pointing to chart -->
                     <div
                         style="position: absolute; bottom: -30px; right: 50px; width: 0; height: 0; border-left: 30px solid transparent; border-right: 30px solid transparent; border-top: 30px solid #0F5132;">
+                    </div>
+
+                    <!-- Rotate Warning (Positioned below the box) -->
+                    <div class="rotate-warning"
+                        style="position: absolute; bottom: -95px; left: 40px; display: flex; flex-direction: column; align-items: center; opacity: 0.9;">
+                        <img src="assets/icon_rotate.png" alt="Rotate Device"
+                            style="width: 45px; height: auto; margin-bottom: 5px;">
+                        <span style="font-size: 13px; font-weight: bold; color: #06402B; white-space: nowrap;">اقلب
+                            الجوال للوضع الأفقي</span>
                     </div>
                 </div>
             </div>
