@@ -151,20 +151,7 @@ document.addEventListener('DOMContentLoaded', function () {
         modal.classList.add('hidden');
     };
 
-    document.getElementById('btn-confirm-add').onclick = () => {
-        const count = parseInt(addCountInput.value);
-        if (count > 0) {
-            // Close modal immediately
-            modal.classList.add('hidden');
 
-            // Execute in next tick to keep UI responsive
-            setTimeout(() => {
-                const added = addRandomMembers(selectedMember || rootMember, count);
-                updateEverything();
-                // console.log(`Added ${added} members`);
-            }, 100);
-        }
-    };
 
 
     // --- Logic Builders (Ported from Python) ---
