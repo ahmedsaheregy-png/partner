@@ -818,9 +818,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const teamSizeNoLimit = member.getTeamSize();
         const commNoStopper = teamSizeNoLimit * share;
 
-        // 2️⃣ عمولة بالستوبر (نسبي للعضو - مطابق لـ Python سطر 1249)
-        // maxDepth = generations - member.generation
-        let maxDepth = gens - member.generation;
+        // 2️⃣ عمولة بالستوبر (ثابت لكل الأعضاء)
+        // كل عضو يحصل على عمولة عن نفسه + 10 أجيال تحته = 11 مستوى
+        let maxDepth = gens - 1;  // = 10 للجميع
         if (maxDepth < 0) maxDepth = 0;
         const teamSizeWithLimit = member.getTeamSizeWithLimit(maxDepth);
         const commWithStopper = teamSizeWithLimit * share;
