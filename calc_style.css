@@ -289,9 +289,9 @@ thead th.readonly-col {
     background: linear-gradient(135deg, #27ae60, #2ecc71);
 }
 
-/* Modal */
+/* Modal - FIXED */
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .modal {
@@ -336,6 +336,12 @@ thead th.readonly-col {
     display: flex;
     justify-content: center;
     gap: 10px;
+}
+
+.instructions {
+    text-align: center;
+    padding: 10px;
+    color: #666;
 }
 
 @media (max-width: 768px) {
