@@ -557,10 +557,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const teamSize = member.getTeamSize();
             arrNoStop[g] += teamSize * share;
 
-            // ✅ 2. With Stopper - إصلاح: maxDepth نسبي للعضو (من Python)
-            // الستوبر: العضو يأخذ من (generations - جيله) فقط
-            let maxDepth = gens - 1; // هذا يعطي 11 مستوى للشخص الأول
-            // بالنسبة لأي عضو آخر، نستخدم نفس العمق المطلق
+            // ✅ 2. With Stopper - نسبي للعضو (مطابق لـ Python سطر 562)
+            // الستوبر: كل عضو يأخذ من (generations - 1) عمق تحته
+            // هذا يعني الشخص الأول يأخذ 11 مستوى، والثاني يأخذ 11 مستوى من تحته وهكذا
+            let maxDepth = gens - 1;
+            if (maxDepth < 0) maxDepth = 0;
             const teamSizeLimit = member.getTeamSizeWithLimit(maxDepth);
             arrStop[g] += teamSizeLimit * share;
 
@@ -817,8 +818,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const teamSizeNoLimit = member.getTeamSize();
         const commNoStopper = teamSizeNoLimit * share;
 
-        // 2️⃣ عمولة بالستوبر (نسبي للعضو)
-        let maxDepth = gens - 1;
+        // 2️⃣ عمولة بالستوبر (نسبي للعضو - مطابق لـ Python سطر 1249)
+        // maxDepth = generations - member.generation
+        let maxDepth = gens - member.generation;
         if (maxDepth < 0) maxDepth = 0;
         const teamSizeWithLimit = member.getTeamSizeWithLimit(maxDepth);
         const commWithStopper = teamSizeWithLimit * share;
