@@ -592,59 +592,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function drawConnections(node) {
-        if (!node) return;
-        if (node.leftChild) {
-            ctx.beginPath();
-            ctx.moveTo(node.x, node.y);
-            ctx.lineTo(node.leftChild.x, node.leftChild.y);
-            ctx.strokeStyle = '#aaa';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-            drawConnections(node.leftChild);
-        }
-        if (node.rightChild) {
-            ctx.beginPath();
-            ctx.moveTo(node.x, node.y);
-            ctx.lineTo(node.rightChild.x, node.rightChild.y);
-            ctx.strokeStyle = '#aaa';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-            drawConnections(node.rightChild);
-        }
-    }
 
-    function drawNodes(node) {
-        if (!node) return;
-
-        // Culling for performance (conceptually)
-        // Draw
-        ctx.beginPath();
-        ctx.arc(node.x, node.y, 20, 0, Math.PI * 2);
-
-        if (node === selectedMember) {
-            ctx.fillStyle = '#FF9800';
-            ctx.lineWidth = 4;
-            ctx.strokeStyle = '#E65100';
-        } else {
-            ctx.fillStyle = node.isActive ? '#4CAF50' : '#ccc';
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = '#fff';
-        }
-
-        ctx.fill();
-        ctx.stroke();
-
-        // Text
-        ctx.fillStyle = 'white';
-        ctx.font = 'bold 12px Arial';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(node.id, node.x, node.y);
-
-        drawNodes(node.leftChild);
-        drawNodes(node.rightChild);
-    }
 
     function centerView() {
         offsetX = canvas.width / 2 - (canvas.width / 2); // Center X? No, 0 is fine if calcPositions centers it.
