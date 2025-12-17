@@ -154,10 +154,15 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('btn-confirm-add').onclick = () => {
         const count = parseInt(addCountInput.value);
         if (count > 0) {
-            const added = addRandomMembers(selectedMember || rootMember, count);
+            // Close modal immediately
             modal.classList.add('hidden');
-            alert(`تم إضافة ${added} عضو بنجاح!`);
-            updateEverything();
+
+            // Execute in next tick to keep UI responsive
+            setTimeout(() => {
+                const added = addRandomMembers(selectedMember || rootMember, count);
+                updateEverything();
+                // console.log(`Added ${added} members`);
+            }, 100);
         }
     };
 
@@ -320,59 +325,51 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function addRandomMembers(startNode, count) {
         let added = 0;
-        let candidates = [startNode];
 
-        // Safety break to prevent infinite loops if tree full
+        let pool = [];
+
+        function collect(node) {
+            if (!node || node.generation >= 25) return;
+            if (!node.leftChild || !node.rightChild) pool.push(node);
+
+            if (node.leftChild) collect(node.leftChild);
+            if (node.rightChild) collect(node.rightChild);
+        }
+        collect(startNode);
+
+        if (pool.length === 0) return 0;
+
         let safety = 0;
-        while (added < count && candidates.length > 0 && safety < 10000) {
+        while (added < count && pool.length > 0 && safety < 10000) {
             safety++;
-            const idx = Math.floor(Math.random() * candidates.length);
-            const current = candidates[idx];
-            candidates.splice(idx, 1); // Remove to re-evaluate or discard
 
-            if (current.generation >= 25) continue;
+            const idx = Math.floor(Math.random() * pool.length);
+            const current = pool[idx];
 
             let slots = [];
             if (!current.leftChild) slots.push('left');
             if (!current.rightChild) slots.push('right');
 
-            if (slots.length === 0) continue;
-
-            // Decide how many to add to this node (1 or 2)
-            let numToAdd = (slots.length === 2) ? (Math.random() > 0.5 ? 2 : 1) : 1;
-            numToAdd = Math.min(numToAdd, count - added);
-
-            if (numToAdd > 0) {
-                // Pick slot
-                const sideIdx = Math.floor(Math.random() * slots.length);
-                const side = slots[sideIdx];
-
-                const newMem = new Member(nextId++, current.generation + 1, current);
-                newMem.isActive = true;
-
-                if (side === 'left') current.leftChild = newMem;
-                else current.rightChild = newMem;
-
-                added++;
-                candidates.push(newMem);
-                slots.splice(sideIdx, 1);
+            if (slots.length === 0) {
+                pool.splice(idx, 1);
+                continue;
             }
 
-            // If still has slots, add back to candidates? 
-            // The logic in python was: if slots==2 and we added 1, we might add another.
-            // Simplified here: if we added 1 and 1 remains, re-add to candidates.
-            if (numToAdd === 1 && slots.length > 0) { // If we added 1, did we fill both? No.
-                // Actually if we added 1, we removed 1 slot. 
-                // If slots still has items, add back.
-                // Re-add to candidates for future iterations
-                candidates.push(current);
-            }
-            // Add new member to candidates so it can have children too
-            // Handled above.
+            const side = slots[Math.floor(Math.random() * slots.length)];
+            const newMem = new Member(nextId++, current.generation + 1, current);
+            newMem.isActive = true;
 
-            // Python logic re-adds 'current' if (left is None OR right is None)
-            if (!current.leftChild || !current.rightChild) {
-                if (current.generation < 25) candidates.push(current);
+            if (side === 'left') current.leftChild = newMem;
+            else current.rightChild = newMem;
+
+            added++;
+
+            if (newMem.generation < 25) {
+                pool.push(newMem);
+            }
+
+            if (current.leftChild && current.rightChild) {
+                pool.splice(idx, 1);
             }
         }
         return added;
@@ -592,7 +589,103 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    function drawConnections(node) {
+        if (!node) return;
 
+        const screenX = node.x * zoomLevel + offsetX;
+        const screenY = node.y * zoomLevel + offsetY;
+
+        // Optimization: Stop if parent is way way below screen
+        if (screenY > canvas.height + 100) return;
+
+        if (node.leftChild) {
+            const childX = node.leftChild.x * zoomLevel + offsetX;
+            const childY = node.leftChild.y * zoomLevel + offsetY;
+
+            // Only draw if at least one point is close to screen
+            // or if the line crosses the screen (simplified check)
+            if (childY > -100 && screenY < canvas.height + 100) {
+                ctx.beginPath();
+                ctx.moveTo(screenX, screenY);
+                ctx.lineTo(childX, childY);
+                ctx.strokeStyle = '#aaa';
+                ctx.lineWidth = Math.max(1, 2 * zoomLevel);
+                ctx.stroke();
+            }
+            drawConnections(node.leftChild);
+        }
+        if (node.rightChild) {
+            const childX = node.rightChild.x * zoomLevel + offsetX;
+            const childY = node.rightChild.y * zoomLevel + offsetY;
+
+            if (childY > -100 && screenY < canvas.height + 100) {
+                ctx.beginPath();
+                ctx.moveTo(screenX, screenY);
+                ctx.lineTo(childX, childY);
+                ctx.strokeStyle = '#aaa';
+                ctx.lineWidth = Math.max(1, 2 * zoomLevel);
+                ctx.stroke();
+            }
+            drawConnections(node.rightChild);
+        }
+    }
+
+    function drawNodes(node) {
+        if (!node) return;
+
+        // --- PERFORMANCE OPTIMIZATION (CULLING) ---
+        // Calculate screen positions
+        const screenX = node.x * zoomLevel + offsetX;
+        const screenY = node.y * zoomLevel + offsetY;
+        const radius = 25 * zoomLevel;
+
+        // 1. Vertical Culling (The most important)
+        // If node is below the bottom of the canvas, its children are definitely below too. Stop recursion.
+        if (screenY - radius > canvas.height) {
+            return;
+        }
+
+        // 2. Screen Bound Check for Drawing
+        // Only draw the circle/text if it's actually visible on screen
+        const isVisible = (
+            screenX + radius > 0 &&
+            screenX - radius < canvas.width &&
+            screenY + radius > 0 &&
+            screenY - radius < canvas.height
+        );
+
+        if (isVisible) {
+            ctx.beginPath();
+            ctx.arc(screenX, screenY, Math.max(5, radius), 0, Math.PI * 2);
+
+            if (node === selectedMember) {
+                ctx.fillStyle = '#FF9800';
+                ctx.lineWidth = Math.max(2, 4 * zoomLevel);
+                ctx.strokeStyle = '#E65100';
+            } else {
+                ctx.fillStyle = node.isActive ? '#4CAF50' : '#ccc';
+                ctx.lineWidth = Math.max(1, 2 * zoomLevel);
+                ctx.strokeStyle = '#fff';
+            }
+
+            ctx.fill();
+            ctx.stroke();
+
+            // Text (Only if large enough)
+            if (zoomLevel > 0.2) {
+                ctx.fillStyle = 'white';
+                // Adjust font size based on zoom
+                const fontSize = Math.max(8, Math.min(24, 12 * zoomLevel));
+                ctx.font = `bold ${fontSize}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(node.id, screenX, screenY);
+            }
+        }
+
+        drawNodes(node.leftChild);
+        drawNodes(node.rightChild);
+    }
 
     function centerView() {
         offsetX = canvas.width / 2 - (canvas.width / 2); // Center X? No, 0 is fine if calcPositions centers it.
