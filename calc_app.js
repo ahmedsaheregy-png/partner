@@ -151,7 +151,28 @@ document.addEventListener('DOMContentLoaded', function () {
         modal.classList.add('hidden');
     };
 
+    document.getElementById('btn-confirm-add').onclick = () => {
+        const count = parseInt(addCountInput.value);
+        if (count > 0) {
+            // 1. Force close modal instantly
+            modal.classList.add('hidden');
+            modal.style.display = 'none';
 
+            // 2. Clear input
+            addCountInput.value = '';
+
+            // 3. Reset style later
+            setTimeout(() => {
+                modal.style.display = '';
+            }, 500);
+
+            // 4. Run logic async
+            setTimeout(() => {
+                const added = addRandomMembers(selectedMember || rootMember, count);
+                updateEverything();
+            }, 50);
+        }
+    };
 
 
     // --- Logic Builders (Ported from Python) ---
