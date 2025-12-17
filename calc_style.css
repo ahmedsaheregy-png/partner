@@ -1,3 +1,4 @@
+/* Basic Styles inherited from previous style.css + New Specifics */
 :root {
     --primary-color: #0F5132;
     --secondary-color: #1e3c72;
@@ -9,6 +10,9 @@
     --success-color: #27ae60;
     --warning-color: #f39c12;
     --danger-color: #c0392b;
+    --purple-color: #9C27B0;
+    --orange-color: #FF5722;
+    --info-color: #2196F3;
 }
 
 body {
@@ -24,8 +28,10 @@ body {
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     color: white;
     padding: 20px;
-    text-align: center;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .logo-text {
@@ -40,8 +46,19 @@ body {
     font-weight: 500;
 }
 
+.back-link {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: opacity 0.3s;
+}
+
+.back-link:hover {
+    opacity: 0.8;
+}
+
 .container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 30px auto;
     padding: 0 15px;
 }
@@ -51,7 +68,7 @@ body {
     border-radius: 12px;
     padding: 25px;
     margin-bottom: 25px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
 }
 
 .section-title {
@@ -63,11 +80,12 @@ body {
     font-size: 1.4rem;
 }
 
-/* Inputs Grid */
-.inputs-grid {
+/* Inputs & Outputs Grid */
+.inputs-grid,
+.outputs-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 15px;
 }
 
 .input-group {
@@ -77,84 +95,166 @@ body {
 
 .input-group label {
     font-weight: 600;
-    margin-bottom: 8px;
-    font-size: 0.95rem;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
 }
 
 .input-group input {
-    padding: 10px;
+    padding: 8px;
     border: 1px solid var(--border-color);
     border-radius: 6px;
-    font-family: 'Cairo', sans-serif;
     font-size: 1rem;
-    transition: border-color 0.3s;
-}
-
-.input-group input:focus {
-    border-color: var(--secondary-color);
-    outline: none;
+    font-family: 'Cairo';
 }
 
 .input-group.readonly input {
-    background-color: #f0f8ff;
+    background-color: #E0FFFF;
     border-color: #dbeafe;
-    color: #004085;
     font-weight: bold;
 }
 
-/* Table Styles */
+/* Toolbar Buttons */
+.toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    align-items: center;
+}
+
+.btn {
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-family: 'Cairo', sans-serif;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: transform 0.1s, opacity 0.2s;
+}
+
+.btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-primary {
+    background-color: var(--success-color);
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+}
+
+.btn-purple {
+    background-color: var(--purple-color);
+}
+
+.btn-orange {
+    background-color: var(--orange-color);
+}
+
+.btn-info {
+    background-color: var(--info-color);
+}
+
+.btn-warning {
+    background-color: var(--warning-color);
+    color: #333;
+}
+
+.btn-secondary {
+    background-color: #7f8c8d;
+}
+
+.btn-success {
+    background-color: var(--success-color);
+}
+
+.divider {
+    width: 1px;
+    height: 30px;
+    background: #ccc;
+    margin: 0 10px;
+}
+
+.tree-info {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-right: auto;
+}
+
+/* Canvas */
+.canvas-wrapper {
+    height: 600px;
+    background: linear-gradient(#ffffff 1px, transparent 1px), linear-gradient(90deg, #ffffff 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-color: #fafafa;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: grab;
+    position: relative;
+}
+
+.canvas-wrapper:active {
+    cursor: grabbing;
+}
+
+/* Table */
 .table-wrapper {
     overflow-x: auto;
+    max-height: 500px;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 900px;
+    min-width: 1000px;
 }
 
-th, td {
-    padding: 12px 10px;
+th,
+td {
+    padding: 10px 8px;
     text-align: center;
     border-bottom: 1px solid var(--border-color);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
 }
 
 thead th {
     background-color: var(--secondary-color);
     color: white;
-    font-weight: 600;
-    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
-thead th.input-col {
-    background-color: var(--primary-color); 
+thead th.readonly-col {
+    background-color: #555;
 }
 
-/* Input cells in table */
-td input {
-    width: 80px;
-    padding: 6px;
-    text-align: center;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-family: 'Cairo', sans-serif;
-}
-
+/* Grey for ReadOnly logic */
 .totals-row td {
     background-color: #f8f9fa;
-    font-weight: 800;
+    font-weight: bold;
     border-top: 2px solid #333;
-    color: var(--secondary-color);
+    position: sticky;
+    bottom: 0;
 }
 
-/* Outputs Grid */
-.outputs-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-}
-
+/* Output Cards */
 .output-card {
     padding: 20px;
     border-radius: 10px;
@@ -163,13 +263,13 @@ td input {
 }
 
 .output-card h3 {
-    margin: 0 0 10px 0;
-    font-size: 1.1rem;
+    margin: 0 0 10px;
+    font-size: 1rem;
     opacity: 0.9;
 }
 
 .output-card .value {
-    font-size: 2rem;
+    font-size: 1.8rem;
     font-weight: 800;
 }
 
@@ -185,12 +285,73 @@ td input {
     background: linear-gradient(135deg, #e74c3c, #c0392b);
 }
 
-#validation-card.valid {
-    background: linear-gradient(135deg, #1abc9c, #16a085);
+.output-card.padding {
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+}
+
+/* Modal */
+.hidden {
+    display: none;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 400px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    color: var(--secondary-color);
+}
+
+.form-group {
+    margin: 20px 0;
+}
+
+.form-group input {
+    width: 100px;
+    font-size: 1.2rem;
+    padding: 5px;
+    text-align: center;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
 }
 
 @media (max-width: 768px) {
-    .container { margin: 15px auto; }
-    .inputs-grid { grid-template-columns: 1fr; }
-    .logo-text { font-size: 1.4rem; }
+    .main-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .toolbar {
+        justify-content: center;
+    }
+
+    .tree-info {
+        margin-right: 0;
+        width: 100%;
+        text-align: center;
+        margin-top: 10px;
+    }
 }
