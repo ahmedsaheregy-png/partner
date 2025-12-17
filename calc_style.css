@@ -1,0 +1,196 @@
+:root {
+    --primary-color: #0F5132;
+    --secondary-color: #1e3c72;
+    --accent-color: #FFD700;
+    --bg-color: #f4f7f6;
+    --card-bg: #ffffff;
+    --text-color: #333;
+    --border-color: #e0e0e0;
+    --success-color: #27ae60;
+    --warning-color: #f39c12;
+    --danger-color: #c0392b;
+}
+
+body {
+    font-family: 'Cairo', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    direction: rtl;
+}
+
+.main-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.logo-text {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 800;
+}
+
+.calc-label {
+    color: var(--accent-color);
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 15px;
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+
+.section-title {
+    color: var(--secondary-color);
+    margin-top: 0;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+    font-size: 1.4rem;
+}
+
+/* Inputs Grid */
+.inputs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.input-group input {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.input-group input:focus {
+    border-color: var(--secondary-color);
+    outline: none;
+}
+
+.input-group.readonly input {
+    background-color: #f0f8ff;
+    border-color: #dbeafe;
+    color: #004085;
+    font-weight: bold;
+}
+
+/* Table Styles */
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+}
+
+th, td {
+    padding: 12px 10px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.95rem;
+}
+
+thead th {
+    background-color: var(--secondary-color);
+    color: white;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+thead th.input-col {
+    background-color: var(--primary-color); 
+}
+
+/* Input cells in table */
+td input {
+    width: 80px;
+    padding: 6px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: 'Cairo', sans-serif;
+}
+
+.totals-row td {
+    background-color: #f8f9fa;
+    font-weight: 800;
+    border-top: 2px solid #333;
+    color: var(--secondary-color);
+}
+
+/* Outputs Grid */
+.outputs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.output-card {
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+}
+
+.output-card h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.output-card .value {
+    font-size: 2rem;
+    font-weight: 800;
+}
+
+.output-card.info {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
+.output-card.success {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+}
+
+.output-card.warning {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+#validation-card.valid {
+    background: linear-gradient(135deg, #1abc9c, #16a085);
+}
+
+@media (max-width: 768px) {
+    .container { margin: 15px auto; }
+    .inputs-grid { grid-template-columns: 1fr; }
+    .logo-text { font-size: 1.4rem; }
+}

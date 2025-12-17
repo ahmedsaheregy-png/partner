@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حاسبة التسويق الشبكي - Network Marketing Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="calc_style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <header class="main-header">
+        <div class="logo-container">
+            <h1 class="logo-text">SAWAN BANK <span class="calc-label">Calculator</span></h1>
+        </div>
+        <div style="margin-top: 10px;">
+            <a href="index.html" style="color: white; text-decoration: underline;">العودة للصفحة الرئيسية</a>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- Section 1: Inputs -->
+        <section class="card input-section">
+            <h2 class="section-title">📊 القسم الأول: البيانات المدخلة</h2>
+            <div class="inputs-grid">
+
+                <div class="input-group">
+                    <label>سعر المنتج ($):</label>
+                    <input type="number" id="product_price" value="330">
+                </div>
+
+                <div class="input-group">
+                    <label>النسبة المقتطعة (%):</label>
+                    <input type="number" id="deduction_percent" value="10">
+                </div>
+
+                <div class="input-group readonly">
+                    <label>المبلغ المقتطع:</label>
+                    <input type="text" id="deducted_amount" readonly>
+                </div>
+
+                <div class="input-group">
+                    <label>نسبة الشركة (%):</label>
+                    <input type="number" id="company_percent" value="25">
+                </div>
+
+                <div class="input-group readonly">
+                    <label>حصة الشركة:</label>
+                    <input type="text" id="company_share" readonly>
+                </div>
+
+                <div class="input-group readonly">
+                    <label>نسبة خطة الدخل (%):</label>
+                    <input type="text" id="members_percent" readonly>
+                </div>
+
+                <div class="input-group readonly">
+                    <label>حصة خطة الدخل:</label>
+                    <input type="text" id="members_share" readonly>
+                </div>
+
+                <div class="input-group">
+                    <label>عدد الأجيال:</label>
+                    <input type="number" id="generations_count" value="11">
+                </div>
+
+                <div class="input-group readonly">
+                    <label>إجمالي الأعضاء (الافتراضي):</label>
+                    <input type="text" id="default_total_members" readonly>
+                </div>
+
+                <div class="input-group readonly">
+                    <label>حصة العضو الواحد:</label>
+                    <input type="text" id="share_per_member" readonly>
+                </div>
+
+                <div class="input-group">
+                    <label>الحد الأقصى (Cap):</label>
+                    <input type="number" id="cap" value="4606">
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Section 2: Tree Table -->
+        <section class="card table-section">
+            <h2 class="section-title">🌳 القسم الثاني: جدول الشجرة (محاكاة)</h2>
+            <div class="table-wrapper">
+                <table id="tree-table">
+                    <thead>
+                        <tr>
+                            <th>الجيل</th>
+                            <th class="input-col">الخط الأيمن</th>
+                            <th class="input-col">الخط الأيسر</th>
+                            <th>إجمالي الأعضاء</th>
+                            <th>عمولات الشخص الأول</th>
+                            <th>العمولات (بدون ستوبر)</th>
+                            <th>العمولات (بالستوبر)</th>
+                            <th>العمولات (من أسفل)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tree-body">
+                        <!-- Rows genereted by JS -->
+                    </tbody>
+                    <tfoot>
+                        <tr class="totals-row">
+                            <td>الإجمالي</td>
+                            <td id="total-right">0</td>
+                            <td id="total-left">0</td>
+                            <td id="total-members">0</td>
+                            <td id="total-income">0.00</td>
+                            <td id="total-comm-no-stopper">0.00</td>
+                            <td id="total-comm-with-stopper">0.00</td>
+                            <td id="total-comm-bottom-up">0.00</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </section>
+
+        <!-- Section 3: Outputs -->
+        <section class="card output-section">
+            <h2 class="section-title">💰 القسم الثالث: المخرجات النهائية والتحقق</h2>
+            <div class="outputs-grid">
+
+                <div class="output-card info">
+                    <h3>ما تم تخصيصه لخطة الدخل</h3>
+                    <div class="value" id="total_income_plan">0.00</div>
+                </div>
+
+                <div class="output-card success">
+                    <h3>ما تم توزيعه بالفعل (بالستوبر)</h3>
+                    <div class="value" id="total_distributed">0.00</div>
+                </div>
+
+                <div class="output-card warning" id="validation-card">
+                    <h3>خانة التحقق (الفرق)</h3>
+                    <div class="value" id="validation_check">0.00</div>
+                    <small>يجب أن يكون الرقم موجباً أو صفراً</small>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <script src="calc_app.js"></script>
+</body>
+
+</html>
