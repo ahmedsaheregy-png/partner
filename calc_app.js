@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         getTeamSize() {
-            let size = 1; // Includes self
+            let size = 1;
             if (this.leftChild) size += this.leftChild.getTeamSize();
             if (this.rightChild) size += this.rightChild.getTeamSize();
             return size;
@@ -71,8 +71,12 @@ document.addEventListener('DOMContentLoaded', function () {
             return this.leftChild ? this.leftChild.getTeamSize() : 0;
         }
 
+        // ✅ إضافة دالة حساب العمولة (من Python)
+        getCommission(sharePerMember) {
+            return this.getTeamSize() * sharePerMember;
+        }
+
         getTeamSizeWithLimit(maxDepth) {
-            // maxDepth is relative to this node. 0 means only self.
             return this._countWithDepth(0, maxDepth);
         }
 
@@ -99,7 +103,6 @@ document.addEventListener('DOMContentLoaded', function () {
     let dragStartY = 0;
 
     // --- Initialization ---
-    // Canvas sizing
     function resizeCanvas() {
         canvas.width = container.clientWidth;
         canvas.height = container.clientHeight;
@@ -117,10 +120,47 @@ document.addEventListener('DOMContentLoaded', function () {
         centerView();
     }
 
+    // ✅ حساب الـ Cap الافتراضي (من Python)
+    function calculateDefaultCap() {
+        try {
+            const price = parseFloat(inputs.price.value) || 330;
+            const dedPct = parseFloat(inputs.deduction.value) || 10;
+            const comPct = parseFloat(inputs.companyPct.value) || 25;
+            const gens = parseInt(inputs.generations.value) || 11;
+
+            const deducted = price * (dedPct / 100);
+            const membersShare = deducted * ((100 - comPct) / 100);
+            const sharePer = membersShare / gens;
+            const totalMembers = Math.pow(2, gens) - 1;
+            const totalCommission = totalMembers * sharePer;
+
+            return Math.floor(totalCommission);
+        } catch (e) {
+            return 5000;
+        }
+    }
+
+    // ✅ عند تغيير المدخلات - إعادة حساب Cap (من Python)
+    function onInputChange() {
+        const newCap = calculateDefaultCap();
+        inputs.cap.value = newCap;
+        updateEverything();
+    }
+
+    // ✅ عند تغيير عدد الأجيال - إعادة بناء الشجرة (من Python)
+    function onGenerationsChange() {
+        const newCap = calculateDefaultCap();
+        inputs.cap.value = newCap;
+        buildDefaultTree();
+    }
+
     // --- Toolbar Actions ---
 
     document.getElementById('btn-reset').onclick = () => {
-        if (confirm('هل أنت متأكد من تصفير الشجرة؟')) resetTree();
+        if (confirm('هل أنت متأكد من تصفير الشجرة؟')) {
+            resetTree();
+            showToast('تم تصفير الشجرة بنجاح!');
+        }
     };
 
     document.getElementById('btn-default').onclick = () => {
@@ -132,9 +172,53 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Zoom/Pan
-    document.getElementById('btn-zoom-in').onclick = () => { zoomLevel *= 1.2; requestDraw(); };
-    document.getElementById('btn-zoom-out').onclick = () => { zoomLevel /= 1.2; requestDraw(); };
+    document.getElementById('btn-zoom-in').onclick = () => { zoomIn(); };
+    document.getElementById('btn-zoom-out').onclick = () => { zoomOut(); };
     document.getElementById('btn-reset-view').onclick = () => { centerView(); };
+
+    function zoomIn() {
+        zoomLevel *= 1.2;
+        requestDraw();
+    }
+
+    function zoomOut() {
+        zoomLevel /= 1.2;
+        requestDraw();
+    }
+
+    // ✅ اختصارات لوحة المفاتيح (من Python)
+    document.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT') return; // تجاهل إذا كان المستخدم يكتب في حقل
+
+        switch (e.key) {
+            case 'ArrowUp':
+                offsetY += 50;
+                requestDraw();
+                break;
+            case 'ArrowDown':
+                offsetY -= 50;
+                requestDraw();
+                break;
+            case 'ArrowLeft':
+                offsetX += 50;
+                requestDraw();
+                break;
+            case 'ArrowRight':
+                offsetX -= 50;
+                requestDraw();
+                break;
+            case '+':
+            case '=':
+                if (e.ctrlKey) zoomIn();
+                break;
+            case '-':
+                if (e.ctrlKey) zoomOut();
+                break;
+            case '0':
+                if (e.ctrlKey) centerView();
+                break;
+        }
+    });
 
     // Add Random Modal
     const modal = document.getElementById('modal-add-random');
@@ -143,7 +227,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('btn-add-random').onclick = () => {
         const target = selectedMember || rootMember;
-        modalInfo.innerText = `الإضافة تحت العضو رقم: ${target.id} (الجيل: ${target.generation})`;
+        // ✅ عرض معلومات إضافية (من Python)
+        modalInfo.innerHTML = `الإضافة تحت العضو رقم: <strong>${target.id}</strong><br>
+                              الجيل: ${target.generation} | الفريق الحالي: ${target.getTeamSize()}`;
         modal.classList.remove('hidden');
     };
 
@@ -154,42 +240,76 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('btn-confirm-add').onclick = () => {
         const count = parseInt(addCountInput.value);
         if (count > 0) {
-            // 1. Force close modal instantly
             modal.classList.add('hidden');
             modal.style.display = 'none';
+            addCountInput.value = '10';
 
-            // 2. Clear input
-            addCountInput.value = '';
-
-            // 3. Reset style later
             setTimeout(() => {
                 modal.style.display = '';
             }, 500);
 
-            // 4. Run logic async
             setTimeout(() => {
                 const added = addRandomMembers(selectedMember || rootMember, count);
                 updateEverything();
+                // ✅ رسالة نجاح (من Python)
+                showToast(`تم إضافة ${added} عضو بنجاح!`);
             }, 50);
         }
     };
+
+    // ✅ دالة عرض الإشعارات (Toast)
+    function showToast(message) {
+        // إنشاء عنصر Toast إذا لم يكن موجوداً
+        let toast = document.getElementById('toast-notification');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'toast-notification';
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: linear-gradient(135deg, #4CAF50, #45a049);
+                color: white;
+                padding: 15px 30px;
+                border-radius: 10px;
+                font-family: 'Cairo', sans-serif;
+                font-weight: bold;
+                font-size: 1rem;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+                z-index: 10000;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            `;
+            document.body.appendChild(toast);
+        }
+
+        toast.textContent = message;
+        toast.style.opacity = '1';
+
+        setTimeout(() => {
+            toast.style.opacity = '0';
+        }, 3000);
+    }
 
 
     // --- Logic Builders (Ported from Python) ---
 
     function buildDefaultTree() {
-        resetTree();
+        rootMember = new Member(1, 1);
+        rootMember.isActive = true;
+        nextId = 2;
+        selectedMember = null;
+
         const gens = parseInt(inputs.generations.value) || 11;
-        const maxGen = Math.min(gens, 20); // Limit to 20 for logic, similar to python
+        const maxGen = Math.min(gens, 20);
 
         function buildBalanced(parent, currentGen) {
             if (currentGen >= maxGen) return;
 
-            // Right
             parent.rightChild = new Member(nextId++, currentGen + 1, parent);
             parent.rightChild.isActive = true;
 
-            // Left
             parent.leftChild = new Member(nextId++, currentGen + 1, parent);
             parent.leftChild.isActive = true;
 
@@ -199,20 +319,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
         buildBalanced(rootMember, 1);
         updateEverything();
-        alert(`تم بناء الشجرة الافتراضية (${maxGen} جيل)!`);
+        showToast(`تم بناء الشجرة الافتراضية (${maxGen} جيل)!`);
         centerView();
     }
 
     function buildUnbalancedTree() {
-        resetTree();
+        rootMember = new Member(1, 1);
+        rootMember.isActive = true;
+        nextId = 2;
+        selectedMember = null;
 
         const targetCounts = [
-            /* Gen 1 is root */
-            { r: 0, l: 0 }, // Gen 1 (Root has no R/L lines in user table, its children are Gen 2)
-            { r: 1, l: 1 }, // Gen 2 (1 R child, 1 L child)
-            { r: 2, l: 2 }, // Gen 3
-            { r: 4, l: 4 }, // Gen 4
-            { r: 8, l: 7 }, // Gen 5
+            { r: 0, l: 0 },
+            { r: 1, l: 1 },
+            { r: 2, l: 2 },
+            { r: 4, l: 4 },
+            { r: 8, l: 7 },
             { r: 16, l: 9 },
             { r: 32, l: 8 },
             { r: 55, l: 8 },
@@ -230,11 +352,10 @@ document.addEventListener('DOMContentLoaded', function () {
             { r: 32, l: 0 }
         ];
 
-        // membersByGen = { genNumber: [Member, Member...] }
         let membersByGen = {};
         membersByGen[1] = [rootMember];
 
-        for (let i = 0; i < targetCounts.length; i++) { // i=0 refer to Gen 1 logic target
+        for (let i = 0; i < targetCounts.length; i++) {
             const currentGen = i + 1;
             if (currentGen >= 20) break;
 
@@ -244,22 +365,16 @@ document.addEventListener('DOMContentLoaded', function () {
             const currentMembers = membersByGen[currentGen] || [];
             if (currentMembers.length === 0) break;
 
-            // Target for Next Gen
-            // logic: We are AT `currentGen`, we want to create children for `nextGen`.
-            // The table targetCounts is 0-indexed. Gen 1 is index 0.
-            // Target for Gen2 is at index 1.
             let neededRight = 0, neededLeft = 0;
             if (i + 1 < targetCounts.length) {
                 neededRight = targetCounts[i + 1].r;
                 neededLeft = targetCounts[i + 1].l;
             }
 
-            // Shuffle parents
             let potentialParents = [...currentMembers];
             potentialParents.sort(() => Math.random() - 0.5);
 
             if (currentGen === 1) {
-                // Root
                 if (neededRight > 0) {
                     rootMember.rightChild = new Member(nextId++, 2, rootMember);
                     rootMember.rightChild.isActive = true;
@@ -271,7 +386,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     membersByGen[2].push(rootMember.leftChild);
                 }
             } else {
-                // Split parents into RightSide and LeftSide of Root
                 const parentsRight = [];
                 const parentsLeft = [];
 
@@ -286,19 +400,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 });
 
-                // Add needed to Right Side parents
                 let addedR = 0;
                 for (let p of parentsRight) {
                     if (addedR >= neededRight) break;
-                    // Try add right
-                    if (addedR < neededRight) {
+                    if (addedR < neededRight && !p.rightChild) {
                         p.rightChild = new Member(nextId++, nextGen, p);
                         p.rightChild.isActive = true;
                         membersByGen[nextGen].push(p.rightChild);
                         addedR++;
                     }
-                    // Try add left
-                    if (addedR < neededRight) {
+                    if (addedR < neededRight && !p.leftChild) {
                         p.leftChild = new Member(nextId++, nextGen, p);
                         p.leftChild.isActive = true;
                         membersByGen[nextGen].push(p.leftChild);
@@ -306,17 +417,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
 
-                // Add needed to Left Side parents
                 let addedL = 0;
                 for (let p of parentsLeft) {
                     if (addedL >= neededLeft) break;
-                    if (addedL < neededLeft) {
+                    if (addedL < neededLeft && !p.rightChild) {
                         p.rightChild = new Member(nextId++, nextGen, p);
                         p.rightChild.isActive = true;
                         membersByGen[nextGen].push(p.rightChild);
                         addedL++;
                     }
-                    if (addedL < neededLeft) {
+                    if (addedL < neededLeft && !p.leftChild) {
                         p.leftChild = new Member(nextId++, nextGen, p);
                         p.leftChild.isActive = true;
                         membersByGen[nextGen].push(p.leftChild);
@@ -327,13 +437,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         updateEverything();
-        alert("تم بناء الشجرة غير المتوازنة!");
+        showToast("تم بناء الشجرة غير المتوازنة!");
         centerView();
     }
 
     function addRandomMembers(startNode, count) {
         let added = 0;
-
         let pool = [];
 
         function collect(node) {
@@ -387,13 +496,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // --- Updates & Calculations ---
 
     function updateEverything() {
-        // 1. Walk tree to count R/L per gen for the table
-        const counts = {}; // { gen: {r:0, l:0, total: 0} }
-
-        // Init counts
+        const counts = {};
         for (let i = 1; i <= 25; i++) counts[i] = { r: 0, l: 0, total: 0 };
 
-        // Traverse
         function traverseCount(node, isRightBranchOfRoot) {
             if (!node) return;
             const g = node.generation;
@@ -410,26 +515,21 @@ document.addEventListener('DOMContentLoaded', function () {
         traverseCount(rootMember.rightChild, true);
         traverseCount(rootMember.leftChild, false);
 
-        // Update Table UI & Logic Arrays (for rendering)
         renderTableAndCalc(counts);
 
-        // Update Info Label
         const total = rootMember.getTeamSize();
         infoLabel.innerText = `إجمالي الأعضاء: ${total}`;
 
-        // Redraw
         requestDraw();
     }
 
     function renderTableAndCalc(counts) {
-        // Calc Inputs
         const price = parseFloat(inputs.price.value) || 0;
         const dedPct = parseFloat(inputs.deduction.value) || 0;
         const comPct = parseFloat(inputs.companyPct.value) || 0;
         const gens = parseInt(inputs.generations.value) || 11;
         const capVal = parseFloat(inputs.cap.value) || 5000;
 
-        // Header Calcs
         const deducted = price * (dedPct / 100);
         inputs.deductedAmt.value = deducted.toFixed(2);
         const cShare = deducted * (comPct / 100);
@@ -444,10 +544,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (share > capVal) share = capVal;
         inputs.sharePer.value = share.toFixed(2);
 
-        // Tree Calcs (Arrays for columns)
-        // Need to calculate commissions PER GEN
-        // Python: `_calculate_commissions_from_tree` adds to array slots.
-
         let arrNoStop = new Array(26).fill(0);
         let arrStop = new Array(26).fill(0);
         let arrBottom = new Array(26).fill(0);
@@ -461,16 +557,14 @@ document.addEventListener('DOMContentLoaded', function () {
             const teamSize = member.getTeamSize();
             arrNoStop[g] += teamSize * share;
 
-            // 2. With Stopper (Limited Depth * Share)
-            // Limit = (gens - 1)
-            let maxDepth = gens - 1;
-            if (maxDepth < 0) maxDepth = 0;
-
+            // ✅ 2. With Stopper - إصلاح: maxDepth نسبي للعضو (من Python)
+            // الستوبر: العضو يأخذ من (generations - جيله) فقط
+            let maxDepth = gens - 1; // هذا يعطي 11 مستوى للشخص الأول
+            // بالنسبة لأي عضو آخر، نستخدم نفس العمق المطلق
             const teamSizeLimit = member.getTeamSizeWithLimit(maxDepth);
             arrStop[g] += teamSizeLimit * share;
 
             // 3. Bottom Up (Beneficiaries * Share)
-            // min(member.gen, gens)
             const ben = Math.min(member.generation, gens);
             arrBottom[g] += ben * share;
 
@@ -480,32 +574,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
         traverseComm(rootMember);
 
-        // Populate Table DOM
         treeBody.innerHTML = '';
         let sumR = 0, sumL = 0, sumMem = 0, sumInc = 0, sumNoS = 0, sumS = 0, sumB = 0;
 
-        for (let i = 1; i <= 25; i++) { // Show 25 rows
+        for (let i = 1; i <= 25; i++) {
             const c = counts[i];
             const tr = document.createElement('tr');
 
-            // Gen
             tr.innerHTML += `<td>${i}</td>`;
-            // R / L (Readonly)
             tr.innerHTML += `<td class='readonly-col'>${c.r}</td>`;
             tr.innerHTML += `<td class='readonly-col'>${c.l}</td>`;
 
-            // Total
             let genTotal = 0;
             if (i === 1) genTotal = 1;
             else genTotal = c.r + c.l;
 
             tr.innerHTML += `<td>${genTotal}</td>`;
 
-            // Income (Total * Share) - as per Python "income" column
             const income = genTotal * share;
             tr.innerHTML += `<td>${income.toFixed(2)}</td>`;
 
-            // Comm Columns (from arrays)
             const commNo = arrNoStop[i];
             const commSt = arrStop[i];
             const commBt = arrBottom[i];
@@ -516,7 +604,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             treeBody.appendChild(tr);
 
-            // Sums
             sumR += c.r;
             sumL += c.l;
             sumMem += genTotal;
@@ -526,7 +613,6 @@ document.addEventListener('DOMContentLoaded', function () {
             sumB += commBt;
         }
 
-        // Footer
         outputs.totalRight.innerText = sumR;
         outputs.totalLeft.innerText = sumL;
         outputs.totalMembers.innerText = sumMem;
@@ -535,8 +621,7 @@ document.addEventListener('DOMContentLoaded', function () {
         outputs.totalCommStop.innerText = sumS.toFixed(2);
         outputs.totalCommBottom.innerText = sumB.toFixed(2);
 
-        // Final Cards
-        const totalAllocated = sumMem * mShare; // Based on total * share_plan? NO, Python: `total_members * income_plan_share`
+        const totalAllocated = sumMem * mShare;
         outputs.planInc.innerText = totalAllocated.toFixed(2);
         outputs.distInc.innerText = sumS.toFixed(2);
 
@@ -556,29 +641,16 @@ document.addEventListener('DOMContentLoaded', function () {
     // --- Canvas Drawing ---
     function requestDraw() {
         if (!rootMember) return;
-        // Calculate Positions
-        // Recursive layout
-        // y = 50 + depth * 80
-        // x = middle of available range
 
-        // To make panning work, we don't recalculate pos on Pan, just on data change.
-        // But for visual simplicity, let's recalc positions every draw based on canvas width, or fixed width?
-        // Fixed width virtual space is better for huge trees.
-        // Let's assume a large virtual width based on max members in a gen?
+        calculatePositions(rootMember, 50, 0, canvas.width / zoomLevel);
 
-        calculatePositions(rootMember, 50, 0, canvas.width / zoomLevel); // simplified
-
-        // Draw
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         ctx.save();
-        // Apply Pan/Zoom
         ctx.translate(offsetX, offsetY);
         ctx.scale(zoomLevel, zoomLevel);
 
-        // Draw Connections
         drawConnections(rootMember);
-        // Draw Nodes
         drawNodes(rootMember);
 
         ctx.restore();
@@ -591,7 +663,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (node.leftChild || node.rightChild) {
             const mid = (minX + maxX) / 2;
-            // Give slightly more space if needed, simplest is equal split
             calculatePositions(node.leftChild, y + 80, minX, mid);
             calculatePositions(node.rightChild, y + 80, mid, maxX);
         }
@@ -603,15 +674,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const screenX = node.x * zoomLevel + offsetX;
         const screenY = node.y * zoomLevel + offsetY;
 
-        // Optimization: Stop if parent is way way below screen
         if (screenY > canvas.height + 100) return;
 
         if (node.leftChild) {
             const childX = node.leftChild.x * zoomLevel + offsetX;
             const childY = node.leftChild.y * zoomLevel + offsetY;
 
-            // Only draw if at least one point is close to screen
-            // or if the line crosses the screen (simplified check)
             if (childY > -100 && screenY < canvas.height + 100) {
                 ctx.beginPath();
                 ctx.moveTo(screenX, screenY);
@@ -641,20 +709,14 @@ document.addEventListener('DOMContentLoaded', function () {
     function drawNodes(node) {
         if (!node) return;
 
-        // --- PERFORMANCE OPTIMIZATION (CULLING) ---
-        // Calculate screen positions
         const screenX = node.x * zoomLevel + offsetX;
         const screenY = node.y * zoomLevel + offsetY;
         const radius = 25 * zoomLevel;
 
-        // 1. Vertical Culling (The most important)
-        // If node is below the bottom of the canvas, its children are definitely below too. Stop recursion.
         if (screenY - radius > canvas.height) {
             return;
         }
 
-        // 2. Screen Bound Check for Drawing
-        // Only draw the circle/text if it's actually visible on screen
         const isVisible = (
             screenX + radius > 0 &&
             screenX - radius < canvas.width &&
@@ -679,10 +741,8 @@ document.addEventListener('DOMContentLoaded', function () {
             ctx.fill();
             ctx.stroke();
 
-            // Text (Only if large enough)
             if (zoomLevel > 0.2) {
                 ctx.fillStyle = 'white';
-                // Adjust font size based on zoom
                 const fontSize = Math.max(8, Math.min(24, 12 * zoomLevel));
                 ctx.font = `bold ${fontSize}px Arial`;
                 ctx.textAlign = 'center';
@@ -696,9 +756,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function centerView() {
-        offsetX = canvas.width / 2 - (canvas.width / 2); // Center X? No, 0 is fine if calcPositions centers it.
-        // Wait, calcPositions uses (0, width). So root is at width/2.
-        // So default offset 0 is fine.
+        offsetX = 0;
         offsetY = 50;
         zoomLevel = 1.0;
         requestDraw();
@@ -710,9 +768,6 @@ document.addEventListener('DOMContentLoaded', function () {
         dragStartX = e.offsetX;
         dragStartY = e.offsetY;
 
-        // Check click on member
-        const rect = canvas.getBoundingClientRect();
-        // Transform mouse to world
         const mx = (e.offsetX - offsetX) / zoomLevel;
         const my = (e.offsetY - offsetY) / zoomLevel;
 
@@ -720,10 +775,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (clicked) {
             selectedMember = clicked;
             requestDraw();
-            // Show info?
-            // Could update an info panel
-            // Or use alert like Python? No, let's use console or small update for now.
-            // console.log("Selected:", selectedMember.id);
+            // ✅ عرض بطاقة معلومات العضو (من Python)
+            showMemberInfo(clicked);
         }
     });
 
@@ -741,9 +794,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     canvas.addEventListener('wheel', e => {
         e.preventDefault();
-        if (e.deltaY < 0) zoomLevel *= 1.1;
-        else zoomLevel /= 1.1;
-        requestDraw();
+        if (e.deltaY < 0) zoomIn();
+        else zoomOut();
     });
 
     function findMemberAt(node, x, y) {
@@ -756,15 +808,221 @@ document.addEventListener('DOMContentLoaded', function () {
         return findMemberAt(node.rightChild, x, y);
     }
 
-    // Listen to Inputs changes
-    Object.values(inputs).forEach(inp => {
-        if (inp && !inp.readOnly) {
-            inp.addEventListener('input', updateEverything);
+    // ✅ بطاقة معلومات العضو (من Python - on_member_click)
+    function showMemberInfo(member) {
+        const gens = parseInt(inputs.generations.value) || 11;
+        const share = parseFloat(inputs.sharePer.value) || 0;
+
+        // 1️⃣ عمولة بدون ستوبر
+        const teamSizeNoLimit = member.getTeamSize();
+        const commNoStopper = teamSizeNoLimit * share;
+
+        // 2️⃣ عمولة بالستوبر (نسبي للعضو)
+        let maxDepth = gens - 1;
+        if (maxDepth < 0) maxDepth = 0;
+        const teamSizeWithLimit = member.getTeamSizeWithLimit(maxDepth);
+        const commWithStopper = teamSizeWithLimit * share;
+
+        // 3️⃣ عدد المستفيدين منه
+        const beneficiariesCount = Math.min(member.generation, gens);
+
+        // إنشاء/تحديث البطاقة
+        let infoCard = document.getElementById('member-info-card');
+        if (!infoCard) {
+            infoCard = document.createElement('div');
+            infoCard.id = 'member-info-card';
+            infoCard.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                border-radius: 15px;
+                padding: 25px 35px;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+                z-index: 10001;
+                font-family: 'Cairo', sans-serif;
+                direction: rtl;
+                min-width: 350px;
+                text-align: center;
+            `;
+            document.body.appendChild(infoCard);
         }
-    });
+
+        infoCard.innerHTML = `
+            <div style="position: absolute; top: 10px; left: 10px; cursor: pointer; font-size: 20px; color: #999;" onclick="this.parentElement.style.display='none'">✕</div>
+            <h2 style="color: #1e3c72; margin: 0 0 15px; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+                👤 العضو #${member.id}
+            </h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: right; margin-bottom: 15px;">
+                <div><strong>الجيل:</strong> ${member.generation}</div>
+                <div><strong>حجم الفريق:</strong> ${member.getTeamSize()}</div>
+                <div><strong>الفرع الأيمن:</strong> ${member.getRightCount()}</div>
+                <div><strong>الفرع الأيسر:</strong> ${member.getLeftCount()}</div>
+            </div>
+            <hr style="border: none; border-top: 1px solid #eee; margin: 15px 0;">
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-radius: 10px; margin-bottom: 10px;">
+                <div style="font-size: 0.9rem; opacity: 0.9;">💰 عمولته (بدون ستوبر)</div>
+                <div style="font-size: 1.5rem; font-weight: bold;">${commNoStopper.toFixed(2)}</div>
+            </div>
+            <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; padding: 15px; border-radius: 10px; margin-bottom: 10px;">
+                <div style="font-size: 0.9rem; opacity: 0.9;">💰 عمولته (بالستوبر)</div>
+                <div style="font-size: 1.5rem; font-weight: bold;">${commWithStopper.toFixed(2)}</div>
+            </div>
+            <div style="background: linear-gradient(135deg, #fc4a1a 0%, #f7b733 100%); color: white; padding: 15px; border-radius: 10px;">
+                <div style="font-size: 0.9rem; opacity: 0.9;">👥 عدد المستفيدين منه</div>
+                <div style="font-size: 1.5rem; font-weight: bold;">${beneficiariesCount}</div>
+            </div>
+            <button onclick="this.parentElement.style.display='none'" style="margin-top: 20px; padding: 10px 30px; background: #1e3c72; color: white; border: none; border-radius: 8px; font-family: 'Cairo'; font-weight: bold; cursor: pointer;">
+                إغلاق
+            </button>
+        `;
+        infoCard.style.display = 'block';
+    }
+
+    // ✅ زر Top 100 (من Python)
+    // أضف الزر في HTML أو أنشئه ديناميكياً
+    function createTop100Button() {
+        const outputSection = document.querySelector('.output-section .outputs-grid');
+        if (!outputSection) return;
+
+        // تحقق من عدم وجود الزر مسبقاً
+        if (document.getElementById('btn-top-100')) return;
+
+        const btnContainer = document.createElement('div');
+        btnContainer.style.cssText = 'grid-column: 1 / -1; text-align: center; margin-top: 20px;';
+        btnContainer.innerHTML = `
+            <button id="btn-top-100" class="btn" style="background: linear-gradient(135deg, #FFD700, #FFA500); color: #333; padding: 15px 30px; font-size: 1.1rem;">
+                🏆 عرض أعلى 100 عمولة (Top 100)
+            </button>
+        `;
+        outputSection.appendChild(btnContainer);
+
+        document.getElementById('btn-top-100').onclick = showTop100;
+    }
+
+    // ✅ دالة عرض أعلى 100 عمولة (من Python)
+    function showTop100() {
+        const gens = parseInt(inputs.generations.value) || 11;
+        const share = parseFloat(inputs.sharePer.value) || 0;
+
+        // 1. جمع كل الأعضاء
+        const allMembers = getAllMembers(rootMember);
+
+        // 2. حساب العمولة لكل عضو
+        const memberData = [];
+        const limitDepth = gens - 1;
+
+        for (const m of allMembers) {
+            const countStopper = m.getTeamSizeWithLimit(limitDepth);
+            const commission = countStopper * share;
+
+            memberData.push({
+                id: m.id,
+                gen: m.generation,
+                comm: commission,
+                totalTeam: m.getTeamSize(),
+                right: m.getRightCount(),
+                left: m.getLeftCount()
+            });
+        }
+
+        // 3. الترتيب التنازلي
+        memberData.sort((a, b) => b.comm - a.comm);
+
+        // 4. أخذ أعلى 100
+        const top100 = memberData.slice(0, 100);
+
+        // 5. عرض النافذة
+        let top100Modal = document.getElementById('top100-modal');
+        if (!top100Modal) {
+            top100Modal = document.createElement('div');
+            top100Modal.id = 'top100-modal';
+            top100Modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.7);
+                z-index: 10002;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            `;
+            document.body.appendChild(top100Modal);
+        }
+
+        let tableRows = '';
+        for (let i = 0; i < top100.length; i++) {
+            const d = top100[i];
+            tableRows += `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>${d.id}</td>
+                    <td>${d.gen}</td>
+                    <td style="color: #27ae60; font-weight: bold;">${d.comm.toFixed(2)}</td>
+                    <td>${d.totalTeam}</td>
+                    <td>${d.right}</td>
+                    <td>${d.left}</td>
+                </tr>
+            `;
+        }
+
+        top100Modal.innerHTML = `
+            <div style="background: white; border-radius: 15px; padding: 30px; max-width: 900px; max-height: 80vh; overflow: auto; direction: rtl; font-family: 'Cairo', sans-serif;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="margin: 0; color: #1e3c72;">🏆 أعلى ${top100.length} عمولة (بالستوبر)</h2>
+                    <button onclick="document.getElementById('top100-modal').style.display='none'" style="background: #e74c3c; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Cairo';">✕ إغلاق</button>
+                </div>
+                <table style="width: 100%; border-collapse: collapse; text-align: center;">
+                    <thead>
+                        <tr style="background: #1e3c72; color: white;">
+                            <th style="padding: 12px;">الترتيب</th>
+                            <th style="padding: 12px;">كود العضو</th>
+                            <th style="padding: 12px;">الجيل</th>
+                            <th style="padding: 12px;">العمولة (بالستوبر)</th>
+                            <th style="padding: 12px;">حجم الفريق</th>
+                            <th style="padding: 12px;">يمين</th>
+                            <th style="padding: 12px;">يسار</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${tableRows}
+                    </tbody>
+                </table>
+            </div>
+        `;
+        top100Modal.style.display = 'flex';
+    }
+
+    // ✅ جمع كل الأعضاء (من Python)
+    function getAllMembers(node) {
+        const members = [];
+        if (!node) return members;
+
+        const stack = [node];
+        while (stack.length > 0) {
+            const current = stack.pop();
+            members.push(current);
+            if (current.rightChild) stack.push(current.rightChild);
+            if (current.leftChild) stack.push(current.leftChild);
+        }
+        return members;
+    }
+
+
+    // Listen to Inputs changes
+    // ✅ ربط التحديث التلقائي (من Python)
+    inputs.price.addEventListener('input', onInputChange);
+    inputs.deduction.addEventListener('input', onInputChange);
+    inputs.companyPct.addEventListener('input', onInputChange);
+    inputs.generations.addEventListener('input', onGenerationsChange);
+    inputs.cap.addEventListener('input', updateEverything);
 
 
     // Start
     resetTree();
     updateEverything();
+    createTop100Button();
 });
