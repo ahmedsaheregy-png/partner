@@ -875,8 +875,7 @@ document.addEventListener('DOMContentLoaded', function () {
             direction: rtl;
             min-width: 220px;
             pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.2s ease;
+            display: block;
         `;
 
         // تحديد موقع البطاقة (بجانب المؤشر)
@@ -933,22 +932,14 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
         `;
 
-        // إظهار البطاقة بتأثير fade-in
-        requestAnimationFrame(() => {
-            hoverCard.style.opacity = '1';
-        });
+        // البطاقة تظهر مباشرة
     }
 
     // دالة إخفاء بطاقة المعاينة
     function hideHoverCard() {
         const hoverCard = document.getElementById('hover-info-card');
         if (hoverCard) {
-            hoverCard.style.opacity = '0';
-            setTimeout(() => {
-                if (hoverCard.style.opacity === '0') {
-                    hoverCard.style.display = 'none';
-                }
-            }, 200);
+            hoverCard.style.display = 'none';
         }
     }
 
