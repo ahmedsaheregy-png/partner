@@ -783,6 +783,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     window.addEventListener('mouseup', () => { isDragging = false; });
 
+    // متغيرات لتتبع الـ hover والتأخير
+    let hoverMember = null;
+    let hoverTimeout = null;
+
     canvas.addEventListener('mousemove', e => {
         if (isDragging) {
             offsetX += e.offsetX - dragStartX;
@@ -790,8 +794,163 @@ document.addEventListener('DOMContentLoaded', function () {
             dragStartX = e.offsetX;
             dragStartY = e.offsetY;
             requestDraw();
+            // إخفاء بطاقة المعاينة أثناء السحب
+            hideHoverCard();
+        } else {
+            // تحويل إحداثيات الماوس إلى إحداثيات الشجرة
+            const mx = (e.offsetX - offsetX) / zoomLevel;
+            const my = (e.offsetY - offsetY) / zoomLevel;
+
+            // البحث عن العضو تحت المؤشر
+            const memberUnderMouse = findMemberAt(rootMember, mx, my);
+
+            // تغيير شكل المؤشر
+            if (memberUnderMouse) {
+                canvas.style.cursor = 'pointer';
+
+                // عرض بطاقة المعاينة بعد تأخير قصير
+                if (hoverMember !== memberUnderMouse) {
+                    hoverMember = memberUnderMouse;
+                    clearTimeout(hoverTimeout);
+                    hoverTimeout = setTimeout(() => {
+                        showHoverCard(memberUnderMouse, e.clientX, e.clientY);
+                    }, 300); // تأخير 300ms قبل الظهور
+                }
+            } else {
+                canvas.style.cursor = 'grab';
+
+                // إخفاء البطاقة عند مغادرة الدائرة
+                if (hoverMember) {
+                    hoverMember = null;
+                    clearTimeout(hoverTimeout);
+                    hideHoverCard();
+                }
+            }
         }
     });
+
+    // إخفاء البطاقة عند مغادرة الـ canvas
+    canvas.addEventListener('mouseleave', () => {
+        hoverMember = null;
+        clearTimeout(hoverTimeout);
+        hideHoverCard();
+        canvas.style.cursor = 'default';
+    });
+
+    // دالة عرض بطاقة المعاينة (Hover Card)
+    function showHoverCard(member, mouseX, mouseY) {
+        const gens = parseInt(inputs.generations.value) || 11;
+        const share = parseFloat(inputs.sharePer.value) || 0;
+
+        // حساب العمولة بالستوبر
+        let maxDepth = gens - 1;
+        if (maxDepth < 0) maxDepth = 0;
+        const teamSizeWithLimit = member.getTeamSizeWithLimit(maxDepth);
+        const commWithStopper = teamSizeWithLimit * share;
+
+        // حساب العمولة بدون ستوبر
+        const teamSizeNoLimit = member.getTeamSize();
+        const commNoStopper = teamSizeNoLimit * share;
+
+        // عدد المستفيدين
+        const beneficiariesCount = Math.min(member.generation, gens);
+
+        // إنشاء/تحديث بطاقة المعاينة
+        let hoverCard = document.getElementById('hover-info-card');
+        if (!hoverCard) {
+            hoverCard = document.createElement('div');
+            hoverCard.id = 'hover-info-card';
+            document.body.appendChild(hoverCard);
+        }
+
+        hoverCard.style.cssText = `
+            position: fixed;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 15px 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+            z-index: 10003;
+            font-family: 'Cairo', sans-serif;
+            direction: rtl;
+            min-width: 220px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        `;
+
+        // تحديد موقع البطاقة (بجانب المؤشر)
+        let cardX = mouseX + 15;
+        let cardY = mouseY + 15;
+
+        // تأكد أن البطاقة لا تخرج عن الشاشة
+        if (cardX + 250 > window.innerWidth) {
+            cardX = mouseX - 250;
+        }
+        if (cardY + 200 > window.innerHeight) {
+            cardY = mouseY - 200;
+        }
+
+        hoverCard.style.left = cardX + 'px';
+        hoverCard.style.top = cardY + 'px';
+
+        hoverCard.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 10px;">
+                <div style="width: 40px; height: 40px; background: #FF9800; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.1rem;">
+                    ${member.id}
+                </div>
+                <div>
+                    <div style="font-weight: bold; font-size: 1rem;">العضو #${member.id}</div>
+                    <div style="font-size: 0.8rem; opacity: 0.8;">الجيل ${member.generation}</div>
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.85rem;">
+                <div>
+                    <div style="opacity: 0.7;">حجم الفريق</div>
+                    <div style="font-weight: bold;">${member.getTeamSize()}</div>
+                </div>
+                <div>
+                    <div style="opacity: 0.7;">يمين/يسار</div>
+                    <div style="font-weight: bold;">${member.getRightCount()}/${member.getLeftCount()}</div>
+                </div>
+            </div>
+            <div style="margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.3);">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                    <span style="opacity: 0.7;">💰 بالستوبر:</span>
+                    <span style="font-weight: bold; color: #4CAF50;">${commWithStopper.toFixed(2)}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                    <span style="opacity: 0.7;">💰 بدون ستوبر:</span>
+                    <span style="font-weight: bold; color: #FFC107;">${commNoStopper.toFixed(2)}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="opacity: 0.7;">👥 المستفيدين:</span>
+                    <span style="font-weight: bold;">${beneficiariesCount}</span>
+                </div>
+            </div>
+            <div style="margin-top: 10px; text-align: center; font-size: 0.75rem; opacity: 0.6;">
+                اضغط للمزيد من التفاصيل
+            </div>
+        `;
+
+        // إظهار البطاقة بتأثير fade-in
+        requestAnimationFrame(() => {
+            hoverCard.style.opacity = '1';
+        });
+    }
+
+    // دالة إخفاء بطاقة المعاينة
+    function hideHoverCard() {
+        const hoverCard = document.getElementById('hover-info-card');
+        if (hoverCard) {
+            hoverCard.style.opacity = '0';
+            setTimeout(() => {
+                if (hoverCard.style.opacity === '0') {
+                    hoverCard.style.display = 'none';
+                }
+            }, 200);
+        }
+    }
 
     canvas.addEventListener('wheel', e => {
         e.preventDefault();
