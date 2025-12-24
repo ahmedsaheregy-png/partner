@@ -42,6 +42,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const infoLabel = document.getElementById('tree-info-label');
 
     // --- State ---
+    // ✅ قائمة أسماء عربية للمحاكاة
+    const arabicNames = ['أحمد', 'محمد', 'علي', 'عمر', 'خالد', 'سعيد', 'يوسف', 'إبراهيم', 'حسن', 'مصطفى',
+        'فاطمة', 'عائشة', 'مريم', 'زينب', 'نور', 'سارة', 'ليلى', 'هدى', 'أمينة', 'ريم',
+        'عبدالله', 'عبدالرحمن', 'طارق', 'كريم', 'ماجد', 'فيصل', 'سلطان', 'ناصر', 'راشد', 'بدر'];
+
     class Member {
         constructor(id, generation, parent = null) {
             this.id = id;
@@ -50,6 +55,9 @@ document.addEventListener('DOMContentLoaded', function () {
             this.leftChild = null;
             this.rightChild = null;
             this.isActive = false;
+
+            // ✅ اسم تلقائي للمحاكاة
+            this.name = arabicNames[id % arabicNames.length] + ' ' + Math.floor(id / 10);
 
             // Visualization
             this.x = 0;
@@ -102,10 +110,42 @@ document.addEventListener('DOMContentLoaded', function () {
     let dragStartX = 0;
     let dragStartY = 0;
 
+    // ✅ إصلاح الدقة: متغيرات جديدة
+    let dpr = window.devicePixelRatio || 1; // نسبة البكسل للشاشات عالية الدقة
+    let hitMap = []; // مصفوفة تحتوي على بيانات كل دائرة مرسومة
+    let lastMouseX = 0;
+    let lastMouseY = 0;
+    let mouseMoveThrottled = false; // للتحكم في سرعة معالجة حركة الماوس
+
+    // ✅ متغيرات الـ hover (نقلت للأعلى)
+    let hoverMember = null;
+    let hoverTimeout = null;
+    let isMouseOverCard = false;
+
+    // ✅ عرض أساسي ثابت وكبير للشجرة
+    // 1024 دائرة في المستوى الأخير × 40px مسافة = 40,000px
+    const BASE_TREE_WIDTH = 40000;
+
     // --- Initialization ---
     function resizeCanvas() {
-        canvas.width = container.clientWidth;
-        canvas.height = container.clientHeight;
+        // ✅ إصلاح الدقة: استخدام devicePixelRatio
+        dpr = window.devicePixelRatio || 1;
+
+        // الحجم المرئي (CSS size)
+        const displayWidth = container.clientWidth;
+        const displayHeight = container.clientHeight;
+
+        // الحجم الفعلي للـ Canvas (أعلى دقة)
+        canvas.width = Math.floor(displayWidth * dpr);
+        canvas.height = Math.floor(displayHeight * dpr);
+
+        // ضبط حجم CSS ليتطابق مع الحجم المرئي
+        canvas.style.width = displayWidth + 'px';
+        canvas.style.height = displayHeight + 'px';
+
+        // تحجيم السياق ليتناسب مع DPR
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
         requestDraw();
     }
     window.addEventListener('resize', resizeCanvas);
@@ -175,6 +215,83 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('btn-zoom-in').onclick = () => { zoomIn(); };
     document.getElementById('btn-zoom-out').onclick = () => { zoomOut(); };
     document.getElementById('btn-reset-view').onclick = () => { centerView(); };
+
+    // ✅ البحث عن عضو والتكبير على موقعه
+    document.getElementById('btn-search-member').onclick = () => { searchAndZoomToMember(); };
+
+    // البحث عند الضغط على Enter
+    document.getElementById('search-member-id').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            searchAndZoomToMember();
+        }
+    });
+
+    function searchAndZoomToMember() {
+        const searchInput = document.getElementById('search-member-id');
+        const memberId = parseInt(searchInput.value);
+
+        if (!memberId || memberId < 1) {
+            showToast('❌ أدخل كود عضو صحيح!');
+            return;
+        }
+
+        // البحث عن العضو
+        const member = findMemberById(rootMember, memberId);
+
+        if (!member) {
+            showToast(`❌ العضو #${memberId} غير موجود!`);
+            return;
+        }
+
+        // ✅ التكبير والتمركز على العضو
+        zoomToMember(member);
+
+        // تحديد العضو
+        selectedMember = member;
+
+        // إظهار رسالة نجاح
+        showToast(`✅ تم العثور على العضو #${memberId} - الجيل ${member.generation}`);
+
+        // مسح حقل البحث
+        searchInput.value = '';
+    }
+
+    // ✅ التكبير والتمركز على عضو معين
+    function zoomToMember(member) {
+        const displayWidth = container.clientWidth;
+        const displayHeight = container.clientHeight;
+
+        // ✅ حساب المواقع أولاً (بالعرض الثابت)
+        calculatePositions(rootMember, 50, 0, BASE_TREE_WIDTH);
+
+        // ✅ تكبير مناسب لرؤية العضو بوضوح
+        zoomLevel = 0.5; // تكبير متوسط
+
+        // حساب الـ offset لتمركز العضو في منتصف الشاشة
+        const memberScreenX = member.x * zoomLevel;
+        const memberScreenY = member.y * zoomLevel;
+
+        offsetX = (displayWidth / 2) - memberScreenX;
+        offsetY = (displayHeight / 2) - memberScreenY;
+
+        // رسم الشجرة
+        requestDraw();
+
+        // ✅ إظهار الكارد مباشرة بعد البحث
+        setTimeout(() => {
+            showHoverCard(member, displayWidth / 2, displayHeight / 2);
+        }, 100);
+    }
+
+    // دالة البحث عن عضو بالـ ID
+    function findMemberById(node, id) {
+        if (!node) return null;
+        if (node.id === id) return node;
+
+        let found = findMemberById(node.leftChild, id);
+        if (found) return found;
+        return findMemberById(node.rightChild, id);
+    }
 
     function zoomIn() {
         zoomLevel *= 1.2;
@@ -640,22 +757,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     // --- Canvas Drawing ---
+
     function requestDraw() {
         if (!rootMember) return;
 
-        calculatePositions(rootMember, 50, 0, canvas.width / zoomLevel);
+        const displayWidth = container.clientWidth;
+        const displayHeight = container.clientHeight;
 
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // ✅ حساب المواقع بعرض ثابت كبير
+        // هذا يضمن أن الدوائر لها مسافات ثابتة
+        calculatePositions(rootMember, 50, 0, BASE_TREE_WIDTH);
 
-        ctx.save();
-        ctx.translate(offsetX, offsetY);
-        ctx.scale(zoomLevel, zoomLevel);
+        // مسح الـ canvas
+        ctx.clearRect(0, 0, displayWidth, displayHeight);
 
-        drawConnections(rootMember);
-        drawNodes(rootMember);
+        // إعادة بناء الـ Hit Map
+        hitMap = [];
 
-        ctx.restore();
+        // رسم الشجرة
+        drawConnections(rootMember, displayHeight);
+        drawNodes(rootMember, displayWidth, displayHeight);
     }
+
+    // ✅ خوارزمية بسيطة: قسمة العرض على 2 لكل مستوى
+    // الدوائر تتراكب عند التصغير وتنفصل عند التكبير
+    const VERTICAL_SPACING = 80;
 
     function calculatePositions(node, y, minX, maxX) {
         if (!node) return;
@@ -664,24 +790,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (node.leftChild || node.rightChild) {
             const mid = (minX + maxX) / 2;
-            calculatePositions(node.leftChild, y + 80, minX, mid);
-            calculatePositions(node.rightChild, y + 80, mid, maxX);
+            calculatePositions(node.leftChild, y + VERTICAL_SPACING, minX, mid);
+            calculatePositions(node.rightChild, y + VERTICAL_SPACING, mid, maxX);
         }
     }
 
-    function drawConnections(node) {
+    function drawConnections(node, displayHeight) {
         if (!node) return;
 
         const screenX = node.x * zoomLevel + offsetX;
         const screenY = node.y * zoomLevel + offsetY;
 
-        if (screenY > canvas.height + 100) return;
+        if (screenY > displayHeight + 100) return;
 
         if (node.leftChild) {
             const childX = node.leftChild.x * zoomLevel + offsetX;
             const childY = node.leftChild.y * zoomLevel + offsetY;
 
-            if (childY > -100 && screenY < canvas.height + 100) {
+            if (childY > -100 && screenY < displayHeight + 100) {
                 ctx.beginPath();
                 ctx.moveTo(screenX, screenY);
                 ctx.lineTo(childX, childY);
@@ -689,13 +815,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 ctx.lineWidth = Math.max(1, 2 * zoomLevel);
                 ctx.stroke();
             }
-            drawConnections(node.leftChild);
+            drawConnections(node.leftChild, displayHeight);
         }
         if (node.rightChild) {
             const childX = node.rightChild.x * zoomLevel + offsetX;
             const childY = node.rightChild.y * zoomLevel + offsetY;
 
-            if (childY > -100 && screenY < canvas.height + 100) {
+            if (childY > -100 && screenY < displayHeight + 100) {
                 ctx.beginPath();
                 ctx.moveTo(screenX, screenY);
                 ctx.lineTo(childX, childY);
@@ -703,37 +829,63 @@ document.addEventListener('DOMContentLoaded', function () {
                 ctx.lineWidth = Math.max(1, 2 * zoomLevel);
                 ctx.stroke();
             }
-            drawConnections(node.rightChild);
+            drawConnections(node.rightChild, displayHeight);
         }
     }
 
-    function drawNodes(node) {
+    function drawNodes(node, displayWidth, displayHeight) {
         if (!node) return;
 
         const screenX = node.x * zoomLevel + offsetX;
         const screenY = node.y * zoomLevel + offsetY;
         const radius = 25 * zoomLevel;
 
-        if (screenY - radius > canvas.height) {
+        if (screenY - radius > displayHeight) {
             return;
         }
 
         const isVisible = (
             screenX + radius > 0 &&
-            screenX - radius < canvas.width &&
+            screenX - radius < displayWidth &&
             screenY + radius > 0 &&
-            screenY - radius < canvas.height
+            screenY - radius < displayHeight
         );
 
         if (isVisible) {
-            ctx.beginPath();
-            ctx.arc(screenX, screenY, Math.max(5, radius), 0, Math.PI * 2);
+            // ✅ الدائرة المحددة تكون أكبر بكثير وملفتة
+            let drawRadius = Math.max(5, radius);
 
             if (node === selectedMember) {
+                // الدائرة المحددة: أكبر 3x وبإطار متوهج
+                drawRadius = Math.max(30, radius * 3);
+
+                // رسم توهج خارجي (glow)
+                ctx.beginPath();
+                ctx.arc(screenX, screenY, drawRadius + 10, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 152, 0, 0.3)';
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.arc(screenX, screenY, drawRadius + 5, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 152, 0, 0.5)';
+                ctx.fill();
+
+                // الدائرة الأساسية
+                ctx.beginPath();
+                ctx.arc(screenX, screenY, drawRadius, 0, Math.PI * 2);
                 ctx.fillStyle = '#FF9800';
-                ctx.lineWidth = Math.max(2, 4 * zoomLevel);
+                ctx.lineWidth = 4;
                 ctx.strokeStyle = '#E65100';
+            } else if (node === hoverMember) {
+                // لون مميز عند الـ hover
+                ctx.beginPath();
+                ctx.arc(screenX, screenY, drawRadius, 0, Math.PI * 2);
+                ctx.fillStyle = '#00BCD4';
+                ctx.lineWidth = Math.max(2, 3 * zoomLevel);
+                ctx.strokeStyle = '#006064';
             } else {
+                ctx.beginPath();
+                ctx.arc(screenX, screenY, drawRadius, 0, Math.PI * 2);
                 ctx.fillStyle = node.isActive ? '#4CAF50' : '#ccc';
                 ctx.lineWidth = Math.max(1, 2 * zoomLevel);
                 ctx.strokeStyle = '#fff';
@@ -750,94 +902,194 @@ document.addEventListener('DOMContentLoaded', function () {
                 ctx.textBaseline = 'middle';
                 ctx.fillText(node.id, screenX, screenY);
             }
+
+            // ✅ إضافة الدائرة إلى Hit Map
+            // الأبناء يُرسمون بعد الآباء، لذا سيكونون في نهاية المصفوفة
+            hitMap.push({
+                member: node,
+                x: screenX,
+                y: screenY,
+                radius: Math.max(5, radius)
+            });
         }
 
-        drawNodes(node.leftChild);
-        drawNodes(node.rightChild);
+        // رسم الأبناء (سيُضافون بعد الأب في Hit Map)
+        drawNodes(node.leftChild, displayWidth, displayHeight);
+        drawNodes(node.rightChild, displayWidth, displayHeight);
     }
 
     function centerView() {
+        const displayWidth = container.clientWidth;
+
+        // ✅ حساب zoom ملائم لعرض الشجرة كاملة
+        // الشجرة عرضها BASE_TREE_WIDTH، نحتاج أن نعرضها في displayWidth
+        zoomLevel = displayWidth / BASE_TREE_WIDTH;
+
+        // تمركز على الجذر
         offsetX = 0;
         offsetY = 50;
-        zoomLevel = 1.0;
+
         requestDraw();
     }
 
+    // ✅ دالة جديدة: تحويل إحداثيات الماوس بدقة عالية
+    function getAccurateMousePosition(e) {
+        const rect = canvas.getBoundingClientRect();
+        // حساب الإحداثيات بدقة باستخدام getBoundingClientRect
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        return { x, y };
+    }
+
+    // ✅ دالة جديدة: البحث في Hit Map (من الأعلى للأسفل = من نهاية المصفوفة للبداية)
+    function findMemberFromHitMap(mouseX, mouseY, buffer = 5) {
+        // البحث من نهاية المصفوفة (الدوائر المرسومة أخيراً = الأقرب للمستخدم)
+        for (let i = hitMap.length - 1; i >= 0; i--) {
+            const hit = hitMap[i];
+            const dist = Math.sqrt((hit.x - mouseX) ** 2 + (hit.y - mouseY) ** 2);
+            // إضافة buffer للتسامح (يسهل اللمس/الضغط)
+            if (dist <= hit.radius + buffer) {
+                return hit.member;
+            }
+        }
+        return null;
+    }
+
     // Canvas Interactions
+
     canvas.addEventListener('mousedown', e => {
+        const pos = getAccurateMousePosition(e);
+
         isDragging = true;
-        dragStartX = e.offsetX;
-        dragStartY = e.offsetY;
+        dragStartX = pos.x;
+        dragStartY = pos.y;
 
-        const mx = (e.offsetX - offsetX) / zoomLevel;
-        const my = (e.offsetY - offsetY) / zoomLevel;
-
-        const clicked = findMemberAt(rootMember, mx, my);
+        // ✅ البحث باستخدام Hit Map الدقيق
+        const clicked = findMemberFromHitMap(pos.x, pos.y, 3);
         if (clicked) {
+            isDragging = false; // لا نسحب إذا ضغطنا على عضو
             selectedMember = clicked;
             requestDraw();
-            // ✅ عرض بطاقة معلومات العضو (من Python)
-            showMemberInfo(clicked);
+            // عرض بطاقة المعلومات عند الضغط
+            showHoverCard(clicked, e.clientX, e.clientY);
+        } else {
+            // إخفاء البطاقة عند الضغط في مكان فارغ
+            hideHoverCard();
         }
     });
 
     window.addEventListener('mouseup', () => { isDragging = false; });
 
-    // متغيرات لتتبع الـ hover والتأخير
-    let hoverMember = null;
-    let hoverTimeout = null;
-
     canvas.addEventListener('mousemove', e => {
+        const pos = getAccurateMousePosition(e);
+
         if (isDragging) {
-            offsetX += e.offsetX - dragStartX;
-            offsetY += e.offsetY - dragStartY;
-            dragStartX = e.offsetX;
-            dragStartY = e.offsetY;
+            offsetX += pos.x - dragStartX;
+            offsetY += pos.y - dragStartY;
+            dragStartX = pos.x;
+            dragStartY = pos.y;
             requestDraw();
             // إخفاء بطاقة المعاينة أثناء السحب
             hideHoverCard();
+            hoverMember = null;
         } else {
-            // تحويل إحداثيات الماوس إلى إحداثيات الشجرة
-            const mx = (e.offsetX - offsetX) / zoomLevel;
-            const my = (e.offsetY - offsetY) / zoomLevel;
+            // ✅ Throttling: تجنب المعالجة الزائدة
+            if (mouseMoveThrottled) return;
+            mouseMoveThrottled = true;
 
-            // البحث عن العضو تحت المؤشر
-            const memberUnderMouse = findMemberAt(rootMember, mx, my);
+            requestAnimationFrame(() => {
+                mouseMoveThrottled = false;
 
-            // تغيير شكل المؤشر
-            if (memberUnderMouse) {
-                canvas.style.cursor = 'pointer';
+                // ✅ البحث باستخدام Hit Map الدقيق
+                const memberUnderMouse = findMemberFromHitMap(pos.x, pos.y, 5);
 
-                // عرض بطاقة المعاينة بعد تأخير قصير
-                if (hoverMember !== memberUnderMouse) {
-                    hoverMember = memberUnderMouse;
-                    clearTimeout(hoverTimeout);
-                    hoverTimeout = setTimeout(() => {
-                        showHoverCard(memberUnderMouse, e.clientX, e.clientY);
-                    }, 300); // تأخير 300ms قبل الظهور
+                // تغيير شكل المؤشر ولون الدائرة
+                if (memberUnderMouse) {
+                    canvas.style.cursor = 'pointer';
+
+                    // تغيير لون الدائرة عند الـ hover
+                    if (hoverMember !== memberUnderMouse) {
+                        hoverMember = memberUnderMouse;
+                        requestDraw();
+                    }
+                } else {
+                    canvas.style.cursor = 'grab';
+
+                    // إرجاع لون الدائرة عند مغادرتها
+                    if (hoverMember) {
+                        hoverMember = null;
+                        requestDraw();
+                    }
                 }
-            } else {
-                canvas.style.cursor = 'grab';
-
-                // إخفاء البطاقة عند مغادرة الدائرة
-                if (hoverMember) {
-                    hoverMember = null;
-                    clearTimeout(hoverTimeout);
-                    hideHoverCard();
-                }
-            }
+            });
         }
     });
 
-    // إخفاء البطاقة عند مغادرة الـ canvas
-    canvas.addEventListener('mouseleave', () => {
+    // إخفاء البطاقة عند مغادرة الـ canvas (مع التأخير للسماح بالوصول للكارد)
+    canvas.addEventListener('mouseleave', (e) => {
         hoverMember = null;
-        clearTimeout(hoverTimeout);
-        hideHoverCard();
         canvas.style.cursor = 'default';
+        requestDraw();
+
+        // ✅ تأخير قبل إخفاء الكارد للسماح بالوصول إليه
+        setTimeout(() => {
+            // إذا الماوس ليس فوق الكارد، أخفيه
+            if (!isMouseOverCard) {
+                hideHoverCard();
+            }
+        }, 150);
+    });
+
+    // ✅ دعم اللمس (Touch Events) للأجهزة المحمولة
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let isTouching = false;
+
+    canvas.addEventListener('touchstart', e => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        const x = touch.clientX - rect.left;
+        const y = touch.clientY - rect.top;
+
+        touchStartX = x;
+        touchStartY = y;
+        isTouching = true;
+
+        // البحث عن عضو عند نقطة اللمس
+        const touched = findMemberFromHitMap(x, y, 10); // buffer أكبر للمس
+        if (touched) {
+            selectedMember = touched;
+            requestDraw();
+            showHoverCard(touched, touch.clientX, touch.clientY);
+            isTouching = false; // لا نسحب إذا لمسنا عضو
+        }
+    }, { passive: false });
+
+    canvas.addEventListener('touchmove', e => {
+        e.preventDefault();
+        if (!isTouching) return;
+
+        const touch = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        const x = touch.clientX - rect.left;
+        const y = touch.clientY - rect.top;
+
+        offsetX += x - touchStartX;
+        offsetY += y - touchStartY;
+        touchStartX = x;
+        touchStartY = y;
+        requestDraw();
+        hideHoverCard();
+    }, { passive: false });
+
+    canvas.addEventListener('touchend', () => {
+        isTouching = false;
     });
 
     // دالة عرض بطاقة المعاينة (Hover Card)
+    let currentHoverMemberId = null; // لتتبع العضو الحالي
+
     function showHoverCard(member, mouseX, mouseY) {
         const gens = parseInt(inputs.generations.value) || 11;
         const share = parseFloat(inputs.sharePer.value) || 0;
@@ -855,12 +1107,30 @@ document.addEventListener('DOMContentLoaded', function () {
         // عدد المستفيدين
         const beneficiariesCount = Math.min(member.generation, gens);
 
+        // حفظ ID العضو الحالي
+        currentHoverMemberId = member.id;
+
         // إنشاء/تحديث بطاقة المعاينة
         let hoverCard = document.getElementById('hover-info-card');
         if (!hoverCard) {
             hoverCard = document.createElement('div');
             hoverCard.id = 'hover-info-card';
             document.body.appendChild(hoverCard);
+
+            // ✅ إضافة أحداث الماوس للكارد
+            hoverCard.addEventListener('mouseenter', () => {
+                isMouseOverCard = true;
+            });
+
+            hoverCard.addEventListener('mouseleave', () => {
+                isMouseOverCard = false;
+                // تأخير بسيط قبل الإخفاء للسماح بالعودة للدائرة
+                setTimeout(() => {
+                    if (!isMouseOverCard && !hoverMember) {
+                        hideHoverCard();
+                    }
+                }, 200);
+            });
         }
 
         hoverCard.style.cssText = `
@@ -874,8 +1144,9 @@ document.addEventListener('DOMContentLoaded', function () {
             font-family: 'Cairo', sans-serif;
             direction: rtl;
             min-width: 220px;
-            pointer-events: none;
+            pointer-events: auto;
             display: block;
+            cursor: default;
         `;
 
         // تحديد موقع البطاقة (بجانب المؤشر)
@@ -886,12 +1157,13 @@ document.addEventListener('DOMContentLoaded', function () {
         if (cardX + 250 > window.innerWidth) {
             cardX = mouseX - 250;
         }
-        if (cardY + 200 > window.innerHeight) {
-            cardY = mouseY - 200;
+        if (cardY + 250 > window.innerHeight) {
+            cardY = mouseY - 250;
         }
 
         hoverCard.style.left = cardX + 'px';
         hoverCard.style.top = cardY + 'px';
+        hoverCard.style.display = 'block';
 
         hoverCard.innerHTML = `
             <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 10px;">
@@ -899,9 +1171,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     ${member.id}
                 </div>
                 <div>
-                    <div style="font-weight: bold; font-size: 1rem;">العضو #${member.id}</div>
-                    <div style="font-size: 0.8rem; opacity: 0.8;">الجيل ${member.generation}</div>
+                    <div style="font-weight: bold; font-size: 1rem;">${member.name}</div>
+                    <div style="font-size: 0.75rem; opacity: 0.7;">العضو #${member.id} | الجيل ${member.generation}</div>
                 </div>
+                <div style="margin-right: auto; cursor: pointer; opacity: 0.7; font-size: 1.2rem;" onclick="document.getElementById('hover-info-card').style.display='none'" title="إغلاق">✕</div>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.85rem;">
                 <div>
@@ -927,12 +1200,23 @@ document.addEventListener('DOMContentLoaded', function () {
                     <span style="font-weight: bold;">${beneficiariesCount}</span>
                 </div>
             </div>
-            <div style="margin-top: 10px; text-align: center; font-size: 0.75rem; opacity: 0.6;">
-                اضغط للمزيد من التفاصيل
-            </div>
+            <button onclick="window.showMemberInfoById(${member.id})" style="
+                margin-top: 12px;
+                width: 100%;
+                padding: 10px;
+                background: linear-gradient(135deg, #FF9800, #F57C00);
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-family: 'Cairo', sans-serif;
+                font-weight: bold;
+                font-size: 0.85rem;
+                cursor: pointer;
+                transition: transform 0.2s, box-shadow 0.2s;
+            " onmouseover="this.style.transform='scale(1.02)'; this.style.boxShadow='0 4px 15px rgba(255,152,0,0.4)'" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'">
+                📋 عرض التفاصيل الكاملة
+            </button>
         `;
-
-        // البطاقة تظهر مباشرة
     }
 
     // دالة إخفاء بطاقة المعاينة
@@ -943,20 +1227,43 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // دالة تحديث موقع البطاقة
+    function updateHoverCardPosition(mouseX, mouseY) {
+        const hoverCard = document.getElementById('hover-info-card');
+        if (hoverCard) {
+            let cardX = mouseX + 15;
+            let cardY = mouseY + 15;
+            if (cardX + 250 > window.innerWidth) cardX = mouseX - 250;
+            if (cardY + 200 > window.innerHeight) cardY = mouseY - 200;
+            hoverCard.style.left = cardX + 'px';
+            hoverCard.style.top = cardY + 'px';
+        }
+    }
+
     canvas.addEventListener('wheel', e => {
         e.preventDefault();
         if (e.deltaY < 0) zoomIn();
         else zoomOut();
     });
 
-    function findMemberAt(node, x, y) {
+    // دالة البحث عن عضو عند نقطة معينة (باستخدام إحداثيات الشاشة مباشرة)
+    function findMemberAt(node, screenMouseX, screenMouseY) {
         if (!node) return null;
-        const dist = Math.sqrt((node.x - x) ** 2 + (node.y - y) ** 2);
-        if (dist <= 20) return node;
 
-        let res = findMemberAt(node.leftChild, x, y);
+        // حساب موقع الدائرة على الشاشة بالظبط
+        const screenX = node.x * zoomLevel + offsetX;
+        const screenY = node.y * zoomLevel + offsetY;
+        const screenRadius = 25 * zoomLevel; // نصف قطر الدائرة على الشاشة
+
+        // حساب المسافة في إحداثيات الشاشة مباشرة
+        const dist = Math.sqrt((screenX - screenMouseX) ** 2 + (screenY - screenMouseY) ** 2);
+
+        // الضغطة يجب أن تكون داخل الدائرة بالظبط
+        if (dist <= screenRadius) return node;
+
+        let res = findMemberAt(node.leftChild, screenMouseX, screenMouseY);
         if (res) return res;
-        return findMemberAt(node.rightChild, x, y);
+        return findMemberAt(node.rightChild, screenMouseX, screenMouseY);
     }
 
     // ✅ بطاقة معلومات العضو (من Python - on_member_click)
@@ -1003,9 +1310,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         infoCard.innerHTML = `
             <div style="position: absolute; top: 10px; left: 10px; cursor: pointer; font-size: 20px; color: #999;" onclick="this.parentElement.style.display='none'">✕</div>
-            <h2 style="color: #1e3c72; margin: 0 0 15px; border-bottom: 2px solid #eee; padding-bottom: 10px;">
-                👤 العضو #${member.id}
+            <h2 style="color: #1e3c72; margin: 0 0 5px; padding-bottom: 5px;">
+                👤 ${member.name}
             </h2>
+            <div style="color: #666; font-size: 0.9rem; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+                العضو #${member.id} | الجيل ${member.generation}
+            </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: right; margin-bottom: 15px;">
                 <div><strong>الجيل:</strong> ${member.generation}</div>
                 <div><strong>حجم الفريق:</strong> ${member.getTeamSize()}</div>
@@ -1031,6 +1341,25 @@ document.addEventListener('DOMContentLoaded', function () {
         `;
         infoCard.style.display = 'block';
     }
+
+    // ✅ دالة للبحث عن عضو بالـ ID
+    function findMemberById(node, id) {
+        if (!node) return null;
+        if (node.id === id) return node;
+
+        let found = findMemberById(node.leftChild, id);
+        if (found) return found;
+        return findMemberById(node.rightChild, id);
+    }
+
+    // ✅ دالة لعرض معلومات عضو بالـ ID (متاحة من window)
+    window.showMemberInfoById = function (memberId) {
+        const member = findMemberById(rootMember, memberId);
+        if (member) {
+            hideHoverCard(); // إخفاء الكارد الصغير
+            showMemberInfo(member); // عرض النافذة الكبيرة
+        }
+    };
 
     // ✅ زر Top 100 (من Python)
     // أضف الزر في HTML أو أنشئه ديناميكياً

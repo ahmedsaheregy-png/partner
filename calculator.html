@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="calc_style.css?v=4">
+    <link rel="stylesheet" href="calc_style.css?v=6">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
@@ -109,6 +109,14 @@
                     العرض</button>
 
                 <div class="divider"></div>
+
+                <!-- ✅ خانة البحث -->
+                <div class="search-box">
+                    <input type="number" id="search-member-id" placeholder="كود العضو..." min="1">
+                    <button id="btn-search-member" class="btn btn-success"><i class="fas fa-search"></i> بحث</button>
+                </div>
+
+                <div class="divider"></div>
                 <span id="tree-info-label" class="tree-info">إجمالي الأعضاء: 1</span>
             </div>
 
@@ -200,7 +208,7 @@
         </div>
     </div>
 
-    <script src="calc_app.js?v=7"></script>
+    <script src="calc_app.js?v=25"></script>
 </body>
 
 </html>

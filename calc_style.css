@@ -196,6 +196,41 @@ body {
     margin-right: auto;
 }
 
+
+/* ✅ خانة البحث */
+.search-box {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.search-box input {
+    width: 90px;
+    padding: 8px 10px;
+    border: 2px solid #2196F3;
+    border-radius: 6px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.85rem;
+    text-align: center;
+    font-weight: bold;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: #27ae60;
+    box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.2);
+}
+
+.search-box input::placeholder {
+    font-size: 0.75rem;
+    font-weight: normal;
+    color: #999;
+}
+
 /* Canvas */
 .canvas-wrapper {
     height: 600px;
