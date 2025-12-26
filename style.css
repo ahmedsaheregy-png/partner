@@ -18,7 +18,7 @@
 }
 
 body {
-    font-family: 'Cairo', sans-serif;
+    font-family: 'Tajawal', sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
     line-height: 1.6;
@@ -583,7 +583,7 @@ a {
 }
 
 .plaque-title-decoration {
-    font-family: 'Cairo', sans-serif;
+    font-family: 'Tajawal', sans-serif;
     color: #C5A059;
     font-size: 2.8rem;
     /* Massive Title */

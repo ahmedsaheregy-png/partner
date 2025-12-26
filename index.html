@@ -7,7 +7,10 @@
     <title>SAWAN BANK - صفحة المؤسسين</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Google Fonts - Tajawal for Arabic, Poppins for Logo -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Tajawal:wght@400;500;700;800&display=swap"
+        rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <div id="cache-control" style="display:none;">v2.0</div>
@@ -15,7 +18,7 @@
     <style>
         /* Fallback if external CSS fails or for critical path */
         body {
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Tajawal', sans-serif;
         }
     </style>
 </head>
@@ -392,7 +395,7 @@
                 <!-- Title Box -->
                 <div class="chart-title-box"
                     style="position: relative; background: linear-gradient(135deg, #06402B 0%, #0F5132 100%); color: white; padding: 20px 30px; border-radius: 12px; border-bottom: 4px solid #D1E7DD; box-shadow: 0 10px 20px rgba(0,0,0,0.1); max-width: 650px; text-align: center;">
-                    <h3 style="margin: 0; font-size: 20px; line-height: 1.5; font-family: 'Cairo', sans-serif;">
+                    <h3 style="margin: 0; font-size: 20px; line-height: 1.5; font-family: 'Tajawal', sans-serif;">
                         سيناريوهات الأرباح المتوقعة لشركاء المرحلة الأولى خلال 4 سنوات <span
                             style="color: #ffd700;">(إجمالي الاستثمار 50 ألف$)</span></h3>
                     <!-- Arrow pointing to chart -->
@@ -450,7 +453,7 @@
                         overflow: hidden;
                         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
                         margin-bottom: 20px;
-                        font-family: 'Cairo', sans-serif;
+                        font-family: 'Tajawal', sans-serif;
                     }
 
                     .premium-table thead {
@@ -1212,7 +1215,7 @@
                             text: 'سيناريوهات الأرباح المتوقعة لشركاء المرحلة الأولى خلال 4 سنوات (إجمالي الاستثمار 50 ألف$)',
                             font: {
                                 size: window.innerWidth < 768 ? 11 : 16,
-                                family: 'Cairo'
+                                family: 'Tajawal'
                             },
                             color: '#06402B',
                             padding: { bottom: 20 }
@@ -1233,7 +1236,7 @@
                             ticks: {
                                 color: '#4a4a4a',
                                 font: {
-                                    family: 'Cairo',
+                                    family: 'Tajawal',
                                     size: window.innerWidth < 768 ? 14 : 20,
                                     weight: 'bold'
                                 },
@@ -1255,12 +1258,12 @@
                                 // Month labels above bars (first 3 only)
                                 if (index < 3) {
                                     ctx.fillStyle = '#4a4a4a';
-                                    ctx.font = 'bold 26px Cairo'; // Increased from 20px
+                                    ctx.font = 'bold 26px Tajawal'; // Increased from 20px
                                     ctx.textAlign = 'center';
                                     ctx.fillText(monthLabels[index], bar.x, bar.y - 15);
                                 } else if (index === 3) {
                                     ctx.fillStyle = '#4a4a4a';
-                                    ctx.font = 'bold 26px Cairo';
+                                    ctx.font = 'bold 26px Tajawal';
                                     ctx.textAlign = 'center';
                                     ctx.fillText('الشهر ال 36', bar.x, bar.y - 15);
                                 }
@@ -1271,7 +1274,7 @@
 
                                 if (index === 3) {
                                     // Last column: "أرباح غير متوقعة"
-                                    ctx.font = 'bold 22px Cairo'; // Increased from 18px
+                                    ctx.font = 'bold 22px Tajawal'; // Increased from 18px
                                     const lines = ['أرباح', 'غير', 'متوقعة'];
                                     const lineHeight = 26;
                                     const startY = bar.y + (bar.height / 2) - ((lines.length - 1) * lineHeight / 2);
@@ -1290,10 +1293,10 @@
                                         const line2 = 'سنوي';
 
                                         // Font sizes: Amount large (34px), Stacked small (14px - reduced 30%)
-                                        ctx.font = 'bold 34px Cairo';
+                                        ctx.font = 'bold 34px Tajawal';
                                         const amountWidth = ctx.measureText(amountText).width;
 
-                                        ctx.font = 'bold 14px Cairo';
+                                        ctx.font = 'bold 14px Tajawal';
                                         const line1Width = ctx.measureText(line1).width;
                                         const line2Width = ctx.measureText(line2).width;
                                         const stackWidth = Math.max(line1Width, line2Width);
@@ -1310,7 +1313,7 @@
                                         ctx.textAlign = 'left';
                                         ctx.textBaseline = 'middle';
 
-                                        ctx.font = 'bold 14px Cairo';
+                                        ctx.font = 'bold 14px Tajawal';
 
                                         // Moving closer to center: +/- 8px instead of 12px
                                         const line1Offset = (stackWidth - line1Width) / 2;
@@ -1320,7 +1323,7 @@
                                         ctx.fillText(line2, startX + line2Offset, centerY + 10);
 
                                         // Draw Amount (Right side)
-                                        ctx.font = 'bold 34px Cairo';
+                                        ctx.font = 'bold 34px Tajawal';
                                         ctx.fillText(amountText, startX + stackWidth + gap, centerY);
 
                                         // Reset context properties for other bars
@@ -1328,10 +1331,10 @@
                                         ctx.textAlign = 'center';
                                     } else {
                                         // Columns 2 and 3
-                                        ctx.font = 'bold 38px Cairo'; // Increased from 28px
+                                        ctx.font = 'bold 38px Tajawal'; // Increased from 28px
                                         ctx.fillText(amount, bar.x, centerY - 12);
 
-                                        ctx.font = 'bold 22px Cairo'; // Increased from 18px
+                                        ctx.font = 'bold 22px Tajawal'; // Increased from 18px
                                         ctx.fillText('ربح سنوي', bar.x, centerY + 20);
                                     }
                                 }
